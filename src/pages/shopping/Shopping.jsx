@@ -1,0 +1,231 @@
+import React, { useEffect, useState } from 'react'
+import Card from '../../components/cardSection/Card'
+import { TbArrowsSort } from "react-icons/tb";
+import { MdOutlineFilterList } from "react-icons/md";
+import { useParams } from 'react-router-dom';
+import { useFirebase } from '../../firebase/FirebaseContext';
+import Sidebar from './sidebar/Sidebar';
+const Shopping = ({ setNav, setFoot }) => {
+  const [data, setData] = useState(null);
+  const [filter, setFilterData] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [color, setColor] = useState(null);
+  const [isSleeves, setIsSleeves] = useState(null);
+  const [isSort, setIsSort] = useState("latest");
+  const [colors, setColors] = useState([]);
+  const [isFilterShow,setIsfilterShow] = useState("hidden")
+  const { category } = useParams();
+  // const query2 = decodeURIComponent(category)
+  // console.log(category);
+  const { getAllDocuments } = useFirebase();
+  const [loading, setLoading] = useState(true);
+  const getColors = (products) => {
+    const setOfUniqueColors = new Set();
+    let arr = [];
+    products.map(({ color }) => {
+      if (setOfUniqueColors.has(color) === false) {
+        arr.push(color);
+        setOfUniqueColors.add(color)
+      }
+    })
+    setColors(arr);
+   return products;
+  }
+ 
+  useEffect(() => {
+    const fetchdata = async () => {
+      console.log("i run1");
+      setLoading(true);
+      const data = await getAllDocuments();
+      const documents = [];
+      data.forEach((doc) => {
+        documents.push({ id: doc.id, ...doc.data() });
+      });
+      // console.log(documents);
+      setData(documents);
+      setLoading(false);
+      return documents;
+    }
+
+    const filterDataWithQuery = (data) => {
+      // console.log("data", data);
+      if (category) {
+        console.log("i run2");
+        const decodedQuery = decodeURIComponent(category);
+        const word = decodedQuery.toLowerCase();
+
+        const filteredProducts = data?.filter(({ name, dis, category }) =>
+          name.toLowerCase().includes(word) || dis?.toLowerCase().includes(word) || category.toLowerCase().includes(word)
+        )
+        return filteredProducts;
+      }
+    }
+    const filterData = (data) => {
+      // console.log("dataaa",data);
+      let filteredProducts = filterDataWithQuery(data);
+      getColors(filteredProducts)
+      if(price){
+        const priceArr=price.split("-");
+        console.log(priceArr);
+        filteredProducts = filteredProducts.filter(({DPrice})=>DPrice>=Number(priceArr[0])&&DPrice<=Number(priceArr[1]));
+        console.log(filteredProducts);
+      
+      }
+      if(color){
+        filteredProducts = filteredProducts.filter((item)=>item.color===color);
+      }
+      if(isSleeves){
+       filteredProducts = filteredProducts.filter(({dis})=>dis.toLowerCase().includes(isSleeves.toLowerCase()))
+      }
+      if(isSort){
+        switch (isSort) {
+          case 'latest':
+            // Default sorting (no need to modify the order)
+            break;
+          case 'ratingHighToLow':
+            filteredProducts.sort((a, b) => b.rating - a.rating);
+            break;
+          case 'ratingLowToHigh':
+            filteredProducts.sort((a, b) => a.rating - b.rating);
+            break;
+          case 'priceHighToLow':
+            filteredProducts.sort((a, b) => b.DPrice - a.DPrice);
+            break;
+          case 'priceLowToHigh':
+            filteredProducts.sort((a, b) => a.DPrice - b.DPrice);
+            break;
+          default:
+            break;
+        }
+      }
+      setFilterData(filteredProducts);
+    }
+   if(!data){
+    fetchdata()
+    .then((res)=>filterData(res))
+    .catch((error) => console.log(error))
+   }
+   else{
+    filterData(data);
+    setLoading(false)
+   }
+    setFoot(true)
+    setNav(true)
+
+  }, [category,color,price,isSleeves,isSort])
+  return (
+    <div className='flex w-full h-auto relative'>
+      <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow}/>
+      <div className="product w-full sm:w-4/5 sm:p-10 relative  border border-1 min-h">
+        <div className="shorting flex justify-between items-center ">
+          <h1 className='text-base sm:text-2xl p-3 font-medium'>Search results for "{category}"  {filter?.length} products found</h1>
+          <form>
+            <div className='justify-center items-center hidden md:flex'>
+              <label htmlFor="sort" className='text-slate-500 mr-2 font-extralight'>Sort by:</label>
+              <select name="" id="sort" className='py-1 px-1 sm:py-2 sm:px-3 border border-1 text-slate-400 border-slate-300 rounded-sm' onClick={(e)=>setIsSort(e.target.value)}>
+                <option value="latest" className='h-5'>Latest</option>
+                <option value="ratingHighToLow" className='py-2 px-3'>Rating high to low</option>
+                <option value="ratingLowToHigh" className='py-2 px-3'>Rating low to high</option>
+                <option value="priceHighToLow" className='py-2 px-3'>Price high to low</option>
+                <option value="priceLowToHigh" className='py-2 px-3'>Price low to high</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        {
+          loading ?
+            <>
+              <div className='h-screen sm:h-[20rem] w-full sm:w-[90vw] px-2 py-8 sm:px-10 sm:pt-10 flex justify-start sm:gap-2 flex-wrap sm:flex-nowrap'>
+                <div className={` w-1/2 h-2/5 sm:h-full sm:min-h-96 sm:w-[20%] p-0 sm:p-2 mt-2 `} >
+                  {/* <div className='h-5 w-16 bg-slate-200 animate-pulse'></div> */}
+                  <div className='w-full h-[80%] sm:h-[80%] relative'>
+                    <div className='w-full h-full group bg-slate-200 animate-pulse' />
+                  </div>
+                  <div className="text-black p-1 h-5 w-16 bg-slate-200 animate-pulse tracking-tighter sm:font-bold mt-2 sm:text-sm"></div>
+                  <div className='flex justify-between p-1 items-center'>
+                    <p className="font-bold my-1 h-5 w-10 bg-slate-200 animate-pulse"></p>
+                    <div className='flex'>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                    </div>
+                  </div>
+                  <button className='w-full p-1 h-10 bg-slate-200 animate-pulse  duration-500 border-slate-800 hover:text-white'></button>
+                </div>
+                <div className={` w-1/2 h-2/5 sm:h-full sm:min-h-96 sm:w-[20%] p-0 sm:p-2 mt-2 `} >
+                  {/* <div className='h-5 w-16 bg-slate-200 animate-pulse'></div> */}
+                  <div className='w-full h-[80%] sm:h-[80%] relative'>
+                    <div className='w-full h-full group bg-slate-200 animate-pulse rounded-lg' />
+                  </div>
+                  <div className="text-black p-1 h-5 w-16 bg-slate-200 animate-pulse tracking-tighter sm:font-bold mt-2 sm:text-sm"></div>
+                  <div className='flex justify-between p-1 items-center'>
+                    <p className="font-bold my-1 h-5 w-10 bg-slate-200 animate-pulse"></p>
+                    <div className='flex'>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                    </div>
+                  </div>
+                  <button className='w-full p-1 h-10 bg-slate-200 animate-pulse  duration-500 border-slate-800 hover:text-white'></button>
+                </div>
+                <div className={` w-1/2 h-2/5 sm:h-full sm:min-h-96 sm:w-[20%] p-0 sm:p-2 mt-2 `} >
+                  {/* <div className='h-5 w-16 bg-slate-200 animate-pulse'></div> */}
+                  <div className='w-full h-[80%] sm:h-[80%] relative'>
+                    <div className='w-full h-full group bg-slate-200 animate-pulse' />
+                  </div>
+                  <div className="text-black p-1 h-5 w-16 bg-slate-200 animate-pulse tracking-tighter sm:font-bold mt-2 sm:text-sm"></div>
+                  <div className='flex justify-between p-1 items-center'>
+                    <p className="font-bold my-1 h-5 w-10 bg-slate-200 animate-pulse"></p>
+                    <div className='flex'>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                    </div>
+                  </div>
+                  <button className='w-full p-1 h-10 bg-slate-200 animate-pulse  duration-500 border-slate-800 hover:text-white'></button>
+                </div>
+                <div className={` w-1/2 h-2/5 sm:h-full sm:min-h-96 sm:w-[20%] p-0 sm:p-2 mt-2 `} >
+                  {/* <div className='h-5 w-16 bg-slate-200 animate-pulse'></div> */}
+                  <div className='w-full h-[80%] sm:h-[80%] relative'>
+                    <div className='w-full h-full group bg-slate-200 animate-pulse' />
+                  </div>
+                  <div className="text-black p-1 h-5 w-16 bg-slate-200 animate-pulse tracking-tighter sm:font-bold mt-2 sm:text-sm"></div>
+                  <div className='flex justify-between p-1 items-center'>
+                    <p className="font-bold my-1 h-5 w-10 bg-slate-200 animate-pulse"></p>
+                    <div className='flex'>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                      <div className='bg-slate-200 animate-pulse h-2 w-2 rounded-full'></div>
+                    </div>
+                  </div>
+                  <button className='w-full p-1 h-10 bg-slate-200 animate-pulse  duration-500 border-slate-800 hover:text-white'></button>
+                </div>
+
+              </div>
+            </> : <>
+              <div className="flex flex-wrap justify-start items-center h-auto">
+
+                {filter?.map((item) => (
+                  <Card key={item.id} img={item?.image[0]} name={item.name} price1={item.DPrice} price2={item.OPrice} id={item.id} />
+                ))}
+              </div></>}
+        <div className='sm:hidden flex fixed bottom-0 h-14 bg-slate-50 w-full justify-between items-center'>
+          <div className="sort w-1/2 flex justify-center items-center">
+            <TbArrowsSort className='mr-2' />
+            <p className='text-base font-semibold text-red-500'>SORT</p>
+          </div>
+          <div className="sort w-1/2 flex justify-center items-center">
+            <MdOutlineFilterList className='mr-2' />
+            <p className='text-base font-semibold text-red-500' onClick={() => setIsfilterShow("block")}>Filter</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Shopping
