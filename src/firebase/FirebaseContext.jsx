@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getBytes, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -24,7 +26,8 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { getDatabase, ref, set } from "firebase/database"; // Import the necessary functions for Realtime Database
+// import { getDatabase, ref, set } from "firebase/  
+// Import the necessary functions for Realtime Database
 
 const Firebase = createContext(null);
 
@@ -44,31 +47,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const userAuth = getAuth(app);
 export const firestore = getFirestore(app);
-
+const storage = getStorage()
 export const ContextProvider = (props) => {
-  const [user, setUser] = useState(null);
-
-
-  // const addDataToFirestore = async (jsonData) => {
-  //   const menCollection = collection(firestore, "men");
-  //    console.log("enterred");
-  //   const addDocPromises = jsonData.map(async (data) => {
-  //     try {
-  //       console.log(data);
-  //       await addDoc(menCollection, data);
-  //       console.log("Document successfully written to Firestore!");
-  //     } catch (error) {
-  //       console.error("Error writing document to Firestore: ", error);
-  //     }
-  //   });
-
-  //   try {
-  //     await Promise.all(addDocPromises);
-  //     console.log("All documents successfully written to Firestore!");
-  //   } catch (error) {
-  //     console.error("Error writing documents to Firestore: ", error);
-  //   }
-  // };
+const [user, setUser] = useState(null);
+const currentDate = new Date().toLocaleDateString();
+// console.log(currentDateOnly);
+const currentTime = new Date().toLocaleTimeString();
+// console.log(currentTimeOnly);
+ 
   useEffect(() => {
     onAuthStateChanged(userAuth, (user) => {
       if (user) {
@@ -122,10 +108,57 @@ export const ContextProvider = (props) => {
     console.log("Error in getting a singlr document",error);
   }
  }
+ const getReviewDocument = async(productId)=>{
+  try {
+    const itemsRef = collection(firestore,'men',productId,"user-reviews");
+      return await getDocs(itemsRef);
+  } catch (error) {
+    console.log("Error in getting a single document",error);
+  }
+ }
+ const addReviewForProduct = async (productId, rating, reviewDescription, reviewTitle,imagesForDb) => {
+  try {
+    // Upload images to storage
+    const imageUrls = imagesForDb
+    ? await Promise.all(imagesForDb.map(async (image) => {
+        const imageRef = ref(storage, `uploads/items/${Date.now()}-${image.name}`);
+        const upload = await uploadBytes(imageRef, image);
+        return upload.ref.fullPath;
+      }))
+    : [];
+
+    // Add review to Firestore
+    // const user = /* Get the user object or UID */;
+  console.log(productId);
+    const collectionRef = collection(firestore, 'men', productId,"user-reviews");
+
+    const reviewData = {
+      reviewTitle: reviewTitle,
+      reviewDescription: reviewDescription,
+      rating: rating,
+      images: imageUrls,
+      currentDate,
+      currentTime
+    };
+
+    await addDoc(collectionRef, reviewData);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const addOrder = async(order)=>{
+  try {
+    const ref = collection(firestore,"orders");
+    return await addDoc(ref,order)
+  } catch (error) {
+     console.log("error in adding order",error);
+  }
+}
   return (
     <>
       <Firebase.Provider
-        value={{ signUp, signin, isLoggedIn,getDocuments,getDocument,getAllDocuments}}
+        value={{ signUp, signin, isLoggedIn,getDocuments,getDocument,getAllDocuments,addReviewForProduct,getReviewDocument,addOrder}}
       >
         {props.children}
       </Firebase.Provider>

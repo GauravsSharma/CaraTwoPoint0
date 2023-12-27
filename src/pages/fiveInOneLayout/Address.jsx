@@ -50,15 +50,13 @@ const Address = () => {
             <p className=''>Add new address</p>
         </div>
        </div>
-       {
-          isAddShow&&<AdForm setIsAddShow ={setIsAddShow} />
-       }
+      <AdForm isAddShow={isAddShow} setIsAddShow={setIsAddShow}/>
         <div className='flex flex-col sm:flex-row gap-5  mt-10 w-full justify-between items-center'>
             <div className='relative w-full sm:w-1/2 text-start'>
               <p className='text-base sm:text-xs text-slate-400 font-semibold'>Your Address</p>
               {
                 userAddress?(
-                    <h1 className='text-semibold text-xl'>{userAddress?.address1}</h1>
+                    <h1 className='text-semibold text-xl'>{userAddress?.address}</h1>
                 ):(
                     <h1 className='text-semibold text-xl'>Nothing provided</h1>
                 )

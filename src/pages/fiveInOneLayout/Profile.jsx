@@ -26,7 +26,6 @@ const Profile = () => {
       setLoading(false);
     }, 3000);
     // console.log(userData.name);
-    
   }, [])
   const handleOnChange = (label, value) => {
     console.log(label, value);

@@ -12,6 +12,7 @@ import CartPage from './pages/cartPage/CartPage'
 import Profile from './pages/fiveInOneLayout/Profile'
 // import CardSection from './components/cardSection/CardSection'
 import FiveInOneLayout from './pages/fiveInOneLayout/FiveInOneLayout'
+import GetOrders from './pages/cartPage/makeOrders/GetOrders'
 import WishList from './pages/fiveInOneLayout/WishList'
 import Orders from './pages/fiveInOneLayout/Orders'
 import Address from './pages/fiveInOneLayout/Address'
@@ -42,6 +43,7 @@ const App = () => {
         <Route path='/ad' element={<AdForm/>}/>
         <Route path='/login' element={<Login setNav={setNav} setFoot={setFoot}/>}/>
         <Route path='/signup' element={<Register setNav={setNav} setFoot={setFoot}/>}/>
+        <Route path='/checkout' element={<GetOrders setNav={setNav} setFoot={setFoot}/>}/>
       </Routes>
       {isFoot&&<Footer/>}
     </>

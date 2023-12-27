@@ -6,10 +6,8 @@ import Img from '../../components/lazyloader/Img'
 import toast, { Toaster } from 'react-hot-toast'
 import ProductReview from './productReview/ProductReview';
 const ItemDetail = ({ setNav, setFoot }) => {
-    const [carts, setCarts] = useState(() => {
-        const data = localStorage.getItem('carts');
-        return data ? JSON.parse(data) : [];
-    });
+    const [carts, setCarts] = useState([]);
+    const ProductReviewMemoized = React.memo(ProductReview);
     const [loading, setLoading] = useState(true);
     const [obj, setObj] = useState(null);
     const [mainSrc, setMainSrc] = useState();
@@ -17,9 +15,16 @@ const ItemDetail = ({ setNav, setFoot }) => {
     const [imgArr, setImgArr] = useState([]);
     const firebase = useFirebase();
     const { id } = useParams();
+    const [qty,setQty] = useState(1);
     // console.log(id);
     useEffect(() => {
+        // localStorage.removeItem("cart");
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            setCarts(JSON.parse(storedCart));   
+        }
         const fetchData = async () => {
+            setLoading(true)
             try {
                 const res = await firebase.getDocument(id);
                 const data = res.data();
@@ -43,22 +48,31 @@ const ItemDetail = ({ setNav, setFoot }) => {
                 console.error("Error fetching data:", error);
             }
         };
-      
+
         fetchData()
-        .then((res)=>fetchData2(res));
+            .then((res) => fetchData2(res));
         setFoot(true);
         setNav(true);
+
     }, [id, setFoot, setNav]);
-    const  discountPercentage = ((obj?.OPrice - obj?.DPrice) / obj?.OPrice) * 100;
+    const discountPercentage = ((obj?.OPrice - obj?.DPrice) / obj?.OPrice) * 100;
     const handleImgChange = (img) => {
         setMainSrc(img);
     }
-    const handleAddtoCart = () => {
-        const newdata = [...carts, obj];
-        console.log(newdata);
-        localStorage.setItem('carts', JSON.stringify(newdata));
-        toast.success("Item added...")
-    }
+    const handleAddToCart = (product) => {
+        const isProductExists = carts.length>0&&carts.some((item)=>item.id===id)
+        if(isProductExists){
+            toast.error("You have already added this product in the cart.")
+            return;
+        }
+            console.log(obj.id);
+            const newCart = [...carts, { ...obj, id ,qty:Number(qty)}];
+            setCarts(newCart);
+            console.log(newCart);
+            toast.success("Item added")
+            // Store the updated cart in local storage
+            localStorage.setItem('cart', JSON.stringify(newCart));
+    };
     return (
         <>
             {
@@ -117,16 +131,16 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                     <option>Small</option>
                                     <option>Large</option>
                                 </select>
-                                <input type="number" className="focus:outline-none w-14 border border-1 mr-3 p-2" />
-                                <button className='fixed bottom-0 w-full left-0 p-3 text-lg sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white' onClick={handleAddtoCart}>Add to bag</button>
+                                <input type="number" value={qty} className="focus:outline-none w-14 border border-1 mr-3 p-2" onChange={(e)=>setQty(e.target.value)}/>
+                                <button className='fixed bottom-0 w-full left-0 p-3 text-lg sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white' onClick={handleAddToCart}>Add to bag</button>
                                 <h4 className="text-2xl py-4">Product details</h4>
                                 <span className="leading-5 w-full">{
                                     obj?.dis ? <p>{obj?.dis}</p> : <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo accusantium facilis ipsa ut laudantium eligendi omnis dolor dicta. Laborum illum eaque, nihil eius error vero repellat possimus, voluptatibus porro corporis dolor commodi et impedit! Lorem ipsum dolor sit amet consectetur, adipisicing Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, asperiores?</p>
                                 }</span>
                             </div>
                         </section>
-                        <ProductReview/>
-                        <CardSection data={data}/>
+                        <ProductReviewMemoized productId={id} />
+                        <CardSection data={data} />
                         <Toaster />
                     </div>
                 </>

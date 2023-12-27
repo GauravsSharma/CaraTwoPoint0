@@ -5,6 +5,7 @@ const WishList = () => {
   const [wishlist,setWish] = useState();
 
   useEffect(()=>{
+    // localStorage.removeItem("wishlist")
     const data = localStorage.getItem('wishlist')
     setWish(()=>{
       return data?JSON.parse(data):[];
@@ -12,6 +13,7 @@ const WishList = () => {
     setTimeout(() => {
      setLoading(false);
    }, 3000);
+
  },[])
   return (
     <>
@@ -94,7 +96,7 @@ const WishList = () => {
                 wishlist.length>0?<>
                  {
                    wishlist?.map((item)=>(
-                      <Card img={item.img} id={item.id} price ={item.DPrice} name={item.name} isWish={true} setWish={setWish}/>
+                      <Card img={item.img} id={item.id} price1 ={item.DPrice} price2={item.OPrice} name={item.name} isWish={true} setWish={setWish}/>
                     ))
                  }
                 </>:<></>
