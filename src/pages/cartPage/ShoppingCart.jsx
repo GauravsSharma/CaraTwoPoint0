@@ -50,7 +50,7 @@ setISCheckoutShow
        return item.id!==id
       })
       localStorage.setItem("cart",JSON.stringify(updatedCart))
-      toast.success("Item moved to wishlist")
+      toast.success("Item moved to wishlist");
       setCart(updatedCart)
     }
   }

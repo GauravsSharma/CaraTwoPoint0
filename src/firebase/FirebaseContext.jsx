@@ -68,6 +68,7 @@ const currentTime = new Date().toLocaleTimeString();
   // addDataToFirestore(jsonData)
 
   let isLoggedIn = user ? true : false;
+  console.log(isLoggedIn);
   const signUp = (email, password) => {
     try {
       return createUserWithEmailAndPassword(userAuth, email, password);

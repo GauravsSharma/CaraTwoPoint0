@@ -10,15 +10,15 @@ const CustomerReviewCard = ({reviewTitle,reviewDescription,rating,date}) => {
              <p className='font-semibold mt-[2px]'>{rating}</p>
             <IoStar className='ml-1 text-xs' />
        </div>
-       <p className='font-semibold ml-5'>{reviewTitle}</p>
+       <p className='font-semibold sm:ml-5 ml-2'>{reviewTitle}</p>
     </div>
-    <p className='text-base font-medium mt-5'>{reviewDescription}</p>
+    <p className='text-base font-medium sm:mt-5 mt-3 text-slate-600'>{reviewDescription}</p>
     <div className="flex justify-start items-center  my-4">
       
     </div>
     <div className='flex justify-start items-center'>
       <span className='text-xs text-slate-500 mr-4'>Tuhin mukherjee</span>
-      <span className='text-xs text-slate-400 mr-4'> <MdVerified  className='inline-block text-base'/>Certified Buyer, Howrah</span>
+      <span className='text-xs hidden sm:block text-slate-400 mr-4'> <MdVerified  className='inline-block text-base'/>Certified Buyer, Howrah</span>
       <span className='text-xs text-slate-400 mr-4'>{date}</span>
     </div>
  </div>

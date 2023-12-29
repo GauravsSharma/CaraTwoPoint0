@@ -17,7 +17,7 @@ const Contact = ({ setFoot, setNav }) => {
          {
             loading?<div className='p-5'>
             <div className='flex flex-col sm:flex-row w-full h-[60vh] '>
-            <div className='w-full sm:w-[45%] flex justify-center items-start my-4 sm:my-0  flex-col gap-5 p-5'>
+            <div className='w-full sm:w-[45%] flex justify-center items-start my-4 sm:my-0  flex-col gap-5 py-5 px-2'>
               <div className='w-[90%] h-6 bg-slate-200 rounded-sm animate-pulse'></div>
               <div className='w-full'>
                <div className='w-[50%] h-5 bg-slate-200 rounded-sm animate-pulse my-2'></div>

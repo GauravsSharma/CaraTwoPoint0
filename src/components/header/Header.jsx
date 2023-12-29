@@ -4,6 +4,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa";
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useFirebase } from '../../firebase/FirebaseContext';
+import { IoSearch } from "react-icons/io5";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -12,21 +13,30 @@ const Header = () => {
   const navigate = useNavigate();
   const firebase = useFirebase()
   const location = useLocation()
-  const searchArray = ["men shirts", "cargo pants", "demin shirt", "checked shirt", "half sleeves", "printed shirt", "black cargo"]
+  const [toggleSearch, setToggleSearch] = useState("top-0");
+  const searchArray = ["men shirts ", "cargo pants", "demin shirt", "checked shirt", "half sleeves", "printed shirt", "black cargo"]
+  const [toggleMenuOnMount, setToggleMenuOnMount] = useState(false);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    setToggleMenuOnMount(true);
   };
   const searchQuery = (event) => {
     if (event.key === "Enter" && query.length > 0) {
       // console.log(newArr.join(""));
       const searchString = encodeURIComponent(query);
       navigate(`/shopping/${searchString}`);
-      setQuery("")
+      setQuery("");
+      toggleSearch()
       setSearchOption([])
     }
   }
+
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (toggleMenuOnMount) {
+      window.scrollTo(0, 0);
+      toggleMenu()
+    }
+
   }, [location])
   const handleChange = (e) => {
     const getVal = e.target.value;
@@ -40,6 +50,22 @@ const Header = () => {
       return option.includes(getVal.toLowerCase());
     })
     setSearchOption(filterOptions);
+  }
+  const toggleSearchMenu = () => {
+    if (toggleSearch === "top-0") {
+      setToggleSearch("top-full")
+    }
+    else {
+      setToggleSearch("top-0")
+      setSearchOption([])
+    }
+  }
+  const handleSearch = (option) => {
+    const searchString = encodeURIComponent(option);
+    navigate(`/shopping/${searchString}`);
+    setQuery("");
+    setSearchOption([]);
+    toggleSearchMenu();
   }
   return (
     <>
@@ -59,15 +85,15 @@ const Header = () => {
             </div>
           </section>
         ) : (
-          <nav className=" bg-white shadow sticky left-0 top-0 z-50">
-            <div className=" bg-white sm:w-full  container px-6 py-3 mx-auto">
+          <nav className=" bg-white shadow sticky left-0 top-0 z-50 ">
+            <div className=" bg-white sm:w-full  container px-6 py-4 mx-auto">
               <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Link to="/">
-                      <img className="w-auto h-6 sm:h-8" src={Logo} alt="" />
+                      <img className="min-w-12 h-6 sm:h-8" src={Logo} alt="caralogo" />
                     </Link>
-                    <div className="sm:mx-10 mr-2 relative hidden sm:block">
+                    <div className={`sm:mx-5 sm:mr-2 bg-white sm:relative absolute duration-500 ${toggleSearch} -z-10 w-full left-0 px-2 sm:z-50 block `}>
                       <div className="relative">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                           <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
@@ -76,7 +102,7 @@ const Header = () => {
                         </span>
                         <input
                           type="text"
-                          className={`w-full py-2 pl-10 pr-4 text-gray-700 bg-white focus:border-slate-100 focus:outline-none ${searchOption.length > 0 ? "border-t border-l border-r rounded-tl-md rounded-tr-md" : "border rounded-md"}`}
+                          className={`w-full sm:w-full py-2 pl-10 pr-4 text-gray-700 bg-white focus:border-slate-100 focus:outline-none ${searchOption.length > 0 ? "border-t border-l border-r rounded-tl-md rounded-tr-md" : "sm:border rounded-md"}`}
                           placeholder="Search"
                           onChange={handleChange}
                           onKeyUp={searchQuery}
@@ -85,11 +111,11 @@ const Header = () => {
                         />
                       </div>
                       {
-                        searchOption.length > 0 && <div className='h-auto w-full absolute  bg-white p-1 border-l  border-r border-b rounded-br-md rounded-bl-md'>
+                        searchOption.length > 0 && <div className='h-auto w-full absolute left-0 bg-white p-1 border-l  border-r border-b rounded-br-md rounded-bl-md'>
                           {
                             searchOption.map((option) => {
-                              return (<li key={Math.random()} className='text-[15px] cursor-pointer text-slate-400 p-2 ml-6 list-none'
-                                onClick={() => setQuery(option)}
+                              return (<li key={Math.random()} className='text-[15px] cursor-pointer text-slate-400 p-2 sm:ml-6 ml-9 list-none'
+                                onClick={() => handleSearch(option)}
                               >{option}</li>)
                             })
                           }
@@ -101,11 +127,11 @@ const Header = () => {
                   </div>
 
                   <div className="flex lg:hidden">
-                  <div className="flex sm:ml-6 gap-4 sm:flex justify-center items-center">
+                    <div className="flex sm:ml-6 gap-3 sm:flex justify-center items-center">
+                      <IoSearch className='text-[27px] cursor-pointer' onClick={toggleSearchMenu} />
                       <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
-                      <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer' /></Link>
-                      <Link to="/fiveinone/profile"><div className="profile hidden sm:block w-7 h-7 bg-slate-600 rounded-full"></div>
-                    </Link>
+                      <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer mr-3' /></Link>
+
                     </div>
                     <button
                       onClick={toggleMenu}
@@ -121,7 +147,7 @@ const Header = () => {
                         )}
                       </svg>
                     </button>
-                   
+
                   </div>
                 </div>
                 <div className={`absolute inset-x-0 z-20 w-full px-6 py-2 transition-all duration-300 ease-in-out bg-white top-24 md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center ${isOpen ? 'translate-x-0 opacity-100' : 'opacity-0 -translate-x-full'}`}>
@@ -170,30 +196,14 @@ const Header = () => {
                       ""
                     )}
                   </div>
-                  {/* <div className="my-4 md:hidden">
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
-                          <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                        </svg>
-                      </span>
-
-                      <input
-                        type="text"
-                        className="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300"
-                        placeholder="Search"
-
-                      />
-                    </div>
-                  </div> */}
-                  <div className="flex sm:ml-6 gap-4 sm:flex justify-center items-center">
-                      <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
-                      <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer' /></Link>
-                      <Link to="/fiveinone/profile"><div className="profile hidden sm:block w-7 h-7 bg-slate-600 rounded-full"></div>
+                  <div className="sm:ml-6 gap-4 sm:flex justify-center items-center hidden">
+                    <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
+                    <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer' /></Link>
+                    <Link to="/fiveinone/profile"><div className="profile hidden sm:block w-7 h-7 bg-slate-600 rounded-full"></div>
                     </Link>
-                    </div>
+                  </div>
                 </div>
-               
+
               </div>
               <div className=" pt-4 my-2  border-t gap-3 overscroll-x-auto sm:scroll-hidden flex justify-center item-center">
                 <Link className="sm:mx-4 ml-2 text-nowrap text-sm leading-5 text-gray-700 transition-colors duration-300 transform  hover:text-blue-600 dark:hover:text-blue-400 hover:underline md:my-0" to="/shopping/t-shirts">T-shirts</Link>

@@ -119,14 +119,14 @@ const Home = ({setFoot,setNav}) => {
         <div className='p-5 sm:p-20'>
           <img src="https://cdn-media.powerlook.in/mycustomfolder/Live-Offer-1Nov-2023.jpg" alt="" />
         </div>
-        <CardSection data={data1}/>
+        <CardSection data={data1} heading={"New Arrival"} subHead={"Upgrade your wardrobe with our must-have shirts"}/>
         <div className='p-5 sm:py-10 sm:px-20'>
         <h1 className=' text-xl sm:text-2xl  text-center my-1'>Flannel Season</h1>
           <p  className='sm:text-base text-sm text-slate-400 text-center mb-7'>Shop a shirt + layer in one with this new collection</p>
           <img className='w-full sm:h-[500px] h-[220px] object-cover' src="https://cdn-media.powerlook.in/mycustomfolder/discover-the-magic.jpg" alt="" />
 
         </div>
-        <CardSection data={data2}/>
+        <CardSection data={data2} heading={"Season's Best Collections"} subHead={"Discover the latest trends in streetwear"}/>
       </>
     }
    </>

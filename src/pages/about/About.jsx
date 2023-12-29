@@ -30,7 +30,7 @@ const About = ({setNav,setFoot}) => {
       </div>:<>
       <section id="about-head" className="flex    flex-col sm:flex-row items-center p-5 sm:p-10">
       <img src="https://gauravssharma.github.io/Cara.in/about/a6.jpg" className='w-full sm:w-1/2 h-auto' alt=""/>
-      <div className='sm:pl-[50px] w-full sm:w-1/2'>
+      <div className='sm:pl-[50px] w-full sm:w-1/2 py-5'>
        <h2 className='font-bold text-[2rem] sm:text-[3rem]'>Who We Are ?</h2>
        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi corrupti dignissimos dicta exercitationem corporis recusandae cum deserunt quisquam quis. Cum praesentium inventore eveniet, cumque atque quis in. Sed inventore iure amet rem aperiam aspernatur delectus beatae? Laboriosam at ea Lorem ipsum dolor sit amet consectetur, adipisicing elit. In, eius!</p>
        <br/>

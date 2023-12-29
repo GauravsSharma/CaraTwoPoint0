@@ -13,7 +13,8 @@ const Shopping = ({ setNav, setFoot }) => {
   const [isSleeves, setIsSleeves] = useState(null);
   const [isSort, setIsSort] = useState("latest");
   const [colors, setColors] = useState([]);
-  const [isFilterShow,setIsfilterShow] = useState("hidden")
+  const [isFilterShow, setIsfilterShow] = useState("hidden")
+  const [isSortShow, setISSortShow] = useState("top-full");
   const { category } = useParams();
   // const query2 = decodeURIComponent(category)
   // console.log(category);
@@ -29,9 +30,9 @@ const Shopping = ({ setNav, setFoot }) => {
       }
     })
     setColors(arr);
-   return products;
+    return products;
   }
- 
+
   useEffect(() => {
     const fetchdata = async () => {
       console.log("i run1");
@@ -64,20 +65,20 @@ const Shopping = ({ setNav, setFoot }) => {
       // console.log("dataaa",data);
       let filteredProducts = filterDataWithQuery(data);
       getColors(filteredProducts)
-      if(price){
-        const priceArr=price.split("-");
+      if (price) {
+        const priceArr = price.split("-");
         console.log(priceArr);
-        filteredProducts = filteredProducts.filter(({DPrice})=>DPrice>=Number(priceArr[0])&&DPrice<=Number(priceArr[1]));
+        filteredProducts = filteredProducts.filter(({ DPrice }) => DPrice >= Number(priceArr[0]) && DPrice <= Number(priceArr[1]));
         console.log(filteredProducts);
-      
+
       }
-      if(color){
-        filteredProducts = filteredProducts.filter((item)=>item.color===color);
+      if (color) {
+        filteredProducts = filteredProducts.filter((item) => item.color === color);
       }
-      if(isSleeves){
-       filteredProducts = filteredProducts.filter(({dis})=>dis.toLowerCase().includes(isSleeves.toLowerCase()))
+      if (isSleeves) {
+        filteredProducts = filteredProducts.filter(({ dis }) => dis.toLowerCase().includes(isSleeves.toLowerCase()))
       }
-      if(isSort){
+      if (isSort) {
         switch (isSort) {
           case 'latest':
             // Default sorting (no need to modify the order)
@@ -100,29 +101,45 @@ const Shopping = ({ setNav, setFoot }) => {
       }
       setFilterData(filteredProducts);
     }
-   if(!data){
-    fetchdata()
-    .then((res)=>filterData(res))
-    .catch((error) => console.log(error))
-   }
-   else{
-    filterData(data);
-    setLoading(false)
-   }
+    if (!data) {
+      fetchdata()
+        .then((res) => filterData(res))
+        .catch((error) => console.log(error))
+    }
+    else {
+      filterData(data);
+      setLoading(false)
+    }
     setFoot(true)
     setNav(true)
 
-  }, [category,color,price,isSleeves,isSort])
+  }, [category, color, price, isSleeves, isSort])
+  const toggleSort = () => {
+    if (isSortShow === "top-full") {
+      setISSortShow("top-0");
+    }
+    else {
+      setISSortShow("top-full");
+    }
+  }
+  const handleChildClick = (event) => {
+    // Prevent the click event from reaching the outer div
+    event.stopPropagation();
+  };
+  const handleSorting =(state)=>{
+     setIsSort(state)
+     toggleSort("top-full")
+  }
   return (
     <div className='flex w-full h-auto relative'>
-      <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow}/>
+      <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow} />
       <div className="product w-full sm:w-4/5 sm:p-10 relative  border border-1 min-h">
         <div className="shorting flex justify-between items-center ">
           <h1 className='text-base sm:text-2xl p-3 font-medium'>Search results for "{category}"  {filter?.length} products found</h1>
           <form>
             <div className='justify-center items-center hidden md:flex'>
               <label htmlFor="sort" className='text-slate-500 mr-2 font-extralight'>Sort by:</label>
-              <select name="" id="sort" className='py-1 px-1 sm:py-2 sm:px-3 border border-1 text-slate-400 border-slate-300 rounded-sm' onClick={(e)=>setIsSort(e.target.value)}>
+              <select name="" id="sort" className='py-1 px-1 sm:py-2 sm:px-3 border border-1 text-slate-400 border-slate-300 rounded-sm' onClick={(e) => setIsSort(e.target.value)}>
                 <option value="latest" className='h-5'>Latest</option>
                 <option value="ratingHighToLow" className='py-2 px-3'>Rating high to low</option>
                 <option value="ratingLowToHigh" className='py-2 px-3'>Rating low to high</option>
@@ -207,16 +224,24 @@ const Shopping = ({ setNav, setFoot }) => {
 
               </div>
             </> : <>
-              <div className="flex flex-wrap justify-start items-center h-auto">
+              <div className="flex relative flex-wrap justify-start items-center h-auto">
 
                 {filter?.map((item) => (
                   <Card key={item.id} img={item?.image[0]} name={item.name} price1={item.DPrice} price2={item.OPrice} id={item.id} />
                 ))}
-              </div></>}
+              </div>
+              <div className={`h-full bg-slate-700/25 duration-300 w-full fixed ${isSortShow} left-0 sm:hidden flex justify-center overflow-hidden`} onClick={() => toggleSort("top-full")}>
+                <div className={` w-full h-48 bg-slate-100 shadow-2xl p-5 absolute bottom-0`} onClick={(event) => handleChildClick(event)}>
+                  <h2 className='font-bold text-base'>SORT BY</h2>
+                  <div className='w-full border-b py-2 mt-5' onClick={()=>handleSorting("priceHighToLow")}>Price High to Low</div>
+                  <div className='w-full border-b py-2' onClick={()=>handleSorting("priceLowToHigh")}>Price Low to High</div>
+                </div>
+              </div>
+            </>}
         <div className='sm:hidden flex fixed bottom-0 h-14 bg-slate-50 w-full justify-between items-center'>
           <div className="sort w-1/2 flex justify-center items-center">
             <TbArrowsSort className='mr-2' />
-            <p className='text-base font-semibold text-red-500'>SORT</p>
+            <p className='text-base font-semibold text-red-500' onClick={() => toggleSort("top-0")}>SORT</p>
           </div>
           <div className="sort w-1/2 flex justify-center items-center">
             <MdOutlineFilterList className='mr-2' />

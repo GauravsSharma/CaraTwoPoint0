@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import Img from '../../components/lazyloader/Img'
 import toast, { Toaster } from 'react-hot-toast'
 import ProductReview from './productReview/ProductReview';
+import { FaRegHeart } from "react-icons/fa";
 const ItemDetail = ({ setNav, setFoot }) => {
     const [carts, setCarts] = useState([]);
     const ProductReviewMemoized = React.memo(ProductReview);
@@ -118,7 +119,7 @@ const ItemDetail = ({ setNav, setFoot }) => {
                             </div>
                             <div className=" w-full sm:w-[65%] mt-7 sm:px-12 pt-30">
                                 <h6 className="text-xl font-semibold my-2">Home / {obj?.category}</h6>
-                                <h4 className="text-3xl my-2">{obj?.name}</h4>
+                                <h4 className="sm:text-3xl text-2xl my-2">{obj?.name}</h4>
                                 <div className='flex justify-start items-center'>
                                     <h2 className="text-2xl my-2 font-semibold">₹{obj?.DPrice}</h2>
                                     <s className='mr-1 text-slate-400 mx-2 text-xl'>₹{obj?.OPrice}</s>
@@ -132,7 +133,13 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                     <option>Large</option>
                                 </select>
                                 <input type="number" value={qty} className="focus:outline-none w-14 border border-1 mr-3 p-2" onChange={(e)=>setQty(e.target.value)}/>
-                                <button className='fixed bottom-0 w-full left-0 p-3 text-lg sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white' onClick={handleAddToCart}>Add to bag</button>
+                               <div className='flex sm:my-2  left-0 bg-white sm:shadow-sm shadow-2xl p-1 gap-1 w-full z-10 fixed sm:relative bottom-0'>
+                               <button className=' w-1/2 p-3 gap-2 text-base sm:relative sm:w-1/4 sm:p-2 bg-white text-black border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white flex justify-center items-center rounded-md font-semibold ' onClick={()=>{}}>
+                                <FaRegHeart/>
+                               WISHLIST
+                               </button>
+                               <button className='w-1/2 left-0 p-3 text-base sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600 rounded-md  font-semibold  duration-500 border-slate-800 hover:text-white' onClick={handleAddToCart}>ADD TO BAG</button>
+                               </div>
                                 <h4 className="text-2xl py-4">Product details</h4>
                                 <span className="leading-5 w-full">{
                                     obj?.dis ? <p>{obj?.dis}</p> : <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo accusantium facilis ipsa ut laudantium eligendi omnis dolor dicta. Laborum illum eaque, nihil eius error vero repellat possimus, voluptatibus porro corporis dolor commodi et impedit! Lorem ipsum dolor sit amet consectetur, adipisicing Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, asperiores?</p>
@@ -140,7 +147,7 @@ const ItemDetail = ({ setNav, setFoot }) => {
                             </div>
                         </section>
                         <ProductReviewMemoized productId={id} />
-                        <CardSection data={data} />
+                        <CardSection data={data} heading={"Similar Products"} subHead={"You may also like"}/>
                         <Toaster />
                     </div>
                 </>

@@ -13,7 +13,7 @@ const Footer = () => {
 
               <p className="max-w-sm mt-6 text-gray-500">Join 31,000+ others and never miss out on new tips, tutorials, and more.</p>
 
-              <div className="flex mt-6 -mx-2">
+              {/* <div className="flex mt-6 -mx-2">
                 <a href="#" className="mx-2 text-gray-600 transition-colors duration-300 hover:text-blue-500" aria-label="Reddit">
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d=""></path>
@@ -31,12 +31,12 @@ const Footer = () => {
                     <path d=""></path>
                   </svg>
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
 
           <div className="mt-6 lg:mt-0 lg:flex-1">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <div>
                 <h3 className="text-gray-700 uppercase">About</h3>
                 <a href="#" className="block mt-2 text-sm text-gray-600 hover:underline">Company</a>
