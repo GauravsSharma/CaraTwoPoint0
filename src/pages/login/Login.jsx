@@ -34,6 +34,21 @@ const Register = ({setFoot,setNav}) => {
           action.resetForm();
         }
       })
+      const handleSignInWithGoogle = async () => {
+        try {
+          await firebase.signInWithGoogle();
+          toast.success("Success");
+        } catch (error) {
+          if (error.code === 'auth/popup-blocked') {
+            // Handle popup blocked error
+            toast.error("Popup blocked. Please disable your popup blocker.");
+          } else {
+            // Handle other authentication errors
+            console.log(error);
+            toast.error("Authentication error. Please try again.");
+          }
+        }
+      };
       useEffect(()=>{
         if(firebase.isLoggedIn){
            setTimeout(() => {
@@ -85,7 +100,7 @@ const Register = ({setFoot,setNav}) => {
                         <button type='submit' className="mb-1.5 block w-full text-center text-white bg-slate-700 hover:bg-slate-900 px-2 py-1.5 rounded-md">Sign in</button>
                     </div>
                 </form>
-                <button className="flex flex-wrap justify-center w-full border border-gray-300 hover:border-gray-500 px-2 py-1.5 rounded-md">
+                <button className="flex flex-wrap justify-center w-full border border-gray-300 hover:border-gray-500 px-2 py-1.5 rounded-md" onClick={handleSignInWithGoogle}>
                             <img className="w-5 mr-2" src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="Google Icon" />
                             Sign in with Google
                         </button>

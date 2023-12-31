@@ -1,7 +1,8 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Transition, Dialog } from '@headlessui/react';
-import { Toaster } from 'react-hot-toast';
+import { RxCross2 } from "react-icons/rx";
+import toast ,{ Toaster } from 'react-hot-toast';
 
 const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode = "", country = "", state = "",getUserAddress,name="",phoneNumber=""})=>{
   const [formValues, setFormValues] = useState({
@@ -55,6 +56,7 @@ const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode 
 
     localStorage.setItem("userAddress", JSON.stringify(addressData));
     console.log("submit ", formValues);
+    toast.success("Success")
     if(getUserAddress){
       getUserAddress();
     }
@@ -91,7 +93,8 @@ const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode 
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-sm p-2  text-left align-middle shadow-xl transition-all bg-gray-50">
                   <section className="">
-                    <div className="flex flex-col items-center justify-center py-8 mx-auto  lg:py-0">
+                    <div className="flex flex-col items-center justify-center py-8 mx-auto  lg:py-0 relative">
+                      <RxCross2 className='absolute top-3 right-3 cursor-pointer' onClick={()=>{setIsAddShow(false)}}/>
                       <div className="w-full  rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                           <Formik initialValues={initialValues} onSubmit={handleSubmit}>

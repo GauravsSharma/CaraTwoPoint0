@@ -1,31 +1,28 @@
 import React, { useEffect, useState } from 'react'
 
-const Input = ({lable,id,name,onChange,value=null,color="white",resetValue}) => {
-  const [selected,setSelected] = useState(false);
- const handleClick = () => {
-    const newValue = selected ? null : value;
-    console.log(newValue);
-    setSelected(!selected);
-    console.log("selected is",selected);
-    onChange(value);
+const Input = ({lable,id,name,onChange,value,color="white",resetValue,selectedValue,setSelectedValue}) => {
+ const handleClick = (e) => {
+  console.log("newvalue",newValue);
+  onChange(e.target.value);
+  setSelectedValue(e.target.value) // Move the onChange call outside the state updater
+  console.log("selected is", selected);
   };
 
   useEffect(() => { 
-    setSelected(false);
   }, [resetValue]);
   return (
     <label 
     htmlFor={id} 
     className='text-slate-500  block cursor-pointer pl-7  relative'
-    onClick={handleClick}
     >
     <input 
     type="radio" 
     name={name} 
-    value={value}
     id={id} 
     className='text-red-500 hidden'
-    checked={true}
+    onChange={handleClick}
+    checked={selectedValue===value}
+    value={value}
     />
     <div 
     

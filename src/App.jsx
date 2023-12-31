@@ -19,6 +19,7 @@ import Address from './pages/fiveInOneLayout/Address'
 import AdForm from './pages/fiveInOneLayout/AdForm'
 import Login from './pages/login/Login'
 import Register from './pages/register/Register'
+import Checking from "./Checking"
 const App = () => {
   const [isNav,setNav] = useState(true);
   const [isFoot,setFoot] = useState(true);
@@ -44,6 +45,7 @@ const App = () => {
         <Route path='/login' element={<Login setNav={setNav} setFoot={setFoot}/>}/>
         <Route path='/signup' element={<Register setNav={setNav} setFoot={setFoot}/>}/>
         <Route path='/checkout' element={<GetOrders setNav={setNav} setFoot={setFoot}/>}/>
+        <Route path='/check' element={<Checking setNav={setNav} setFoot={setFoot}/>}/>
       </Routes>
       {isFoot&&<Footer/>}
     </>

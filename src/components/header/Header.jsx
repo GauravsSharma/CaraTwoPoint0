@@ -16,9 +16,13 @@ const Header = () => {
   const [toggleSearch, setToggleSearch] = useState("top-0");
   const searchArray = ["men shirts ", "cargo pants", "demin shirt", "checked shirt", "half sleeves", "printed shirt", "black cargo"]
   const [toggleMenuOnMount, setToggleMenuOnMount] = useState(false);
+  const closeMenu = () => {
+    setIsOpen(false);
+
+  };
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    setToggleMenuOnMount(true);
+
   };
   const searchQuery = (event) => {
     if (event.key === "Enter" && query.length > 0) {
@@ -26,17 +30,14 @@ const Header = () => {
       const searchString = encodeURIComponent(query);
       navigate(`/shopping/${searchString}`);
       setQuery("");
-      toggleSearch()
+      setToggleSearch("top-0")
       setSearchOption([])
     }
   }
-
+  let url = firebase.user!=null?firebase.user?.photoURL:"https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671116.jpg?w=740&t=st=1703837364~exp=1703837964~hmac=33dcc8385818924229394fd67ba929edb782c5eb07ec9f261dfa935f2ae88d53";
   useEffect(() => {
-    if (toggleMenuOnMount) {
-      window.scrollTo(0, 0);
-      toggleMenu()
-    }
-
+    closeMenu()
+    window.scrollTo(0, 0);
   }, [location])
   const handleChange = (e) => {
     const getVal = e.target.value;
@@ -91,7 +92,7 @@ const Header = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Link to="/">
-                      <img className="min-w-12 h-6 sm:h-8" src={Logo} alt="caralogo" />
+                      <img className="sm:min-w-[7rem] w-[6rem] h-8 sm:h-8" src={Logo} alt="caralogo" />
                     </Link>
                     <div className={`sm:mx-5 sm:mr-2 bg-white sm:relative absolute duration-500 ${toggleSearch} -z-10 w-full left-0 px-2 sm:z-50 block `}>
                       <div className="relative">
@@ -129,9 +130,15 @@ const Header = () => {
                   <div className="flex lg:hidden">
                     <div className="flex sm:ml-6 gap-3 sm:flex justify-center items-center">
                       <IoSearch className='text-[27px] cursor-pointer' onClick={toggleSearchMenu} />
-                      <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
-                      <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer mr-3' /></Link>
-
+                      <div className='relative'>
+                   <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
+                   <div className=' p-[6px] h-2 w-2 rounded-full bg-red-500 border-white absolute top-0 -right-1 flex justify-center items-center text-[10px] text-white'>{firebase.lengthOfWishlist}</div>
+                   </div>
+                    <div className='relative'>
+                    <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer mr-2' />
+                    </Link>
+                    <div className=' p-[6px] h-2 w-2 rounded-full bg-red-500 border-white absolute top-0 right-1 flex justify-center items-center text-[10px] text-white'>{firebase.lengthOfCart}</div>
+                    </div>
                     </div>
                     <button
                       onClick={toggleMenu}
@@ -197,9 +204,18 @@ const Header = () => {
                     )}
                   </div>
                   <div className="sm:ml-6 gap-4 sm:flex justify-center items-center hidden">
-                    <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
-                    <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer' /></Link>
-                    <Link to="/fiveinone/profile"><div className="profile hidden sm:block w-7 h-7 bg-slate-600 rounded-full"></div>
+                   <div className='relative'>
+                   <Link to="/fiveinone/wishlist"  ><FaRegHeart className='text-2xl cursor-pointer' /></Link>
+                   <div className=' p-[6px] h-2 w-2 rounded-full bg-red-500 border-white absolute top-0 -right-1 flex justify-center items-center text-[10px] text-white'>{firebase.lengthOfWishlist}</div>
+                   </div>
+                    <div className='relative'>
+                    <Link to="/checkout/cart" ><FiShoppingCart className='text-2xl cursor-pointer' />
+                    </Link>
+                    <div className=' p-[6px] h-2 w-2 rounded-full bg-red-500 border-white absolute top-0 -right-1 flex justify-center items-center text-[10px] text-white'>{firebase.lengthOfCart}</div>
+                    </div>
+                    <Link to="/fiveinone/profile"><div className ="profile hidden sm:block w-7 h-7 bg-slate-600 rounded-full overflow-hidden">
+                      <img src={url} alt="user-image" className='' />
+                    </div>
                     </Link>
                   </div>
                 </div>

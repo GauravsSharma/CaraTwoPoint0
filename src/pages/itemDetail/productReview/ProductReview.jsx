@@ -6,28 +6,35 @@ import { PiCaretUpDuotone } from "react-icons/pi";
 import GetReviewsModel from './GetReviewsModel';
 import { useFirebase } from '../../../firebase/FirebaseContext';
 import { useEffect } from 'react';
+import toast,{Toaster} from 'react-hot-toast';
 const ProductReview = ({ productId }) => {
   const [showAllReview, setShowAllReview] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { getReviewDocument } = useFirebase()
+  const { getReviewDocument, user } = useFirebase()
   const [productReviewDoc, seProductReviewDoc] = useState([]);
   const [displayedReviews, setDisplayedReviews] = useState(2);
+
   const toggleModel = () => {
-    console.log("toogle");
-    setIsOpen(!isOpen);
+    if (user) {
+      console.log("toogle");
+      setIsOpen(!isOpen);
+    }
+    else {
+      toast.error("Please login first");
+    }
   }
   const fetchDocument = async () => {
     try {
       const res = await getReviewDocument(productId);
       // const data = res.data();
       seProductReviewDoc(res.docs);
-      console.log("HE tried",res.docs);
+      // console.log("HE tried",res.docs);
       return;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
-  const visibleReviews = productReviewDoc.splice(0,displayedReviews);
+  const visibleReviews = productReviewDoc.splice(0, displayedReviews);
   const handleButtonClick = () => {
     setShowAllReview(!showAllReview);
     // If showAllReview is false, display all reviews; otherwise, display only the first 2
@@ -42,7 +49,7 @@ const ProductReview = ({ productId }) => {
       <div className="box3  w-full h-auto py-10 flex justify-center items-center flex-col gap-5 px-5">
         <h1 className='text-2xl text-center font-semibold text-slate-600'>There is no reviews yet</h1>
         <div className='cursor-pointer py-4 text-white px-2 bg-red-600 rounded-md w-full sm:w-[20%] text-xs font-bold hover:shadow-xl hover:shadow-red-100 duration-500 text-center' onClick={toggleModel}>WRITE A PRODUCT REVIEW</div>
-        <GetReviewsModel isOpen={isOpen} toggleModel={toggleModel} productId={productId} fetchDocument={fetchDocument}/>
+        <GetReviewsModel isOpen={isOpen} toggleModel={toggleModel} productId={productId} fetchDocument={fetchDocument} />
       </div>
     )
   }
@@ -78,28 +85,29 @@ const ProductReview = ({ productId }) => {
             </div>
               <div className='text-slate-900 sm:text-base text-[15px]'>0</div>
             </div>
-           
+
 
           </div>
           <div className="box2 w-full sm:w-[50%]">
             <h1 className='sm:text-3xl text-xl font-semibold mb-5 sm:mb-10'>Customer Reviews</h1>
             <div className='flex flex-col gap-5 duration-500'>
-             {
-              visibleReviews?.map((user)=>(
-                <CustomerReviewCard key={user.id} rating={user.data().rating} reviewDescription={user.data().reviewDescription} reviewTitle={user.data().reviewTitle} date={user.data().currentDate}/>
-              ))
-             }
-             {
-              productReviewDoc.length>2&&<button onClick={handleButtonClick} className='duration-500 text-red-600 text-start'>{
-                showAllReview ? <>Hide all 14 review <PiCaretUpDuotone className='inline-block text-xl' /></> : <>Show all 14 review <IoMdArrowDropdown className='inline-block text-xl' /></>
-              }</button>
-             }
+              {
+                visibleReviews?.map((user) => (
+                  <CustomerReviewCard key={user.id} rating={user.data().rating} reviewDescription={user.data().reviewDescription} reviewTitle={user.data().reviewTitle} date={user.data().currentDate} />
+                ))
+              }
+              {
+                productReviewDoc.length > 2 && <button onClick={handleButtonClick} className='duration-500 text-red-600 text-start'>{
+                  showAllReview ? <>Hide all 14 review <PiCaretUpDuotone className='inline-block text-xl' /></> : <>Show all 14 review <IoMdArrowDropdown className='inline-block text-xl' /></>
+                }</button>
+              }
             </div>
           </div>
           <div className="box3  w-full sm:w-[20%]">
             <div className='cursor-pointer py-4 text-white px-2 bg-red-600 rounded-md w-full sm:w-[70%] text-xs font-bold hover:shadow-xl hover:shadow-red-100 duration-500 text-center' onClick={toggleModel}>WRITE A PRODUCT REVIEW</div>
           </div>
-          <GetReviewsModel isOpen={isOpen} toggleModel={toggleModel} productId={productId} fetchDocument={fetchDocument}/>
+          <GetReviewsModel isOpen={isOpen} toggleModel={toggleModel} productId={productId} fetchDocument={fetchDocument} />
+          <Toaster/>
         </div>
       }
     </>

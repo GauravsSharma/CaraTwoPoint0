@@ -67,10 +67,10 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className="h-px my-6 bg-gray-200 border-none" />
+        <hr className="h-px my-6 bg-gray-200 border-none"/>
 
         <div>
-          <p className="text-center text-gray-500">© Brand 2020 - All rights reserved</p>
+          <p className="text-center text-gray-500">© Brand 2020 - Develope and design by Gaurav Sharma</p>
         </div>
       </div>
     </footer>

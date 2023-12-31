@@ -1,7 +1,9 @@
 import React from 'react'
 import Card from './Card';
+import { useNavigate } from 'react-router-dom';
 
 const CardSection = ({data,heading,subHead}) => {
+  const navigate =useNavigate();
   // console.log(data);
   return (
     <div className=' h-auto p-0 sm:p-10 my-5'>
@@ -16,7 +18,8 @@ const CardSection = ({data,heading,subHead}) => {
           }
         </div> 
         <div className='flex justify-center items-center mt-5'>
-        <button className='py-[6px] px-12 text-base font-bold bg-slate-800 text-white hover:shadow-lg  hover:bg-slate-900 duration-500 mt-5'>VIEW ALL PRODUCT</button>
+        <button className='py-[6px] px-12 text-base font-bold bg-slate-800 text-white hover:shadow-lg  hover:bg-slate-900 duration-500 mt-5
+        ' onClick={()=>navigate(`/shopping/${data[0].data().category}`)}>VIEW ALL PRODUCT</button>
         </div>
     </div>
   )

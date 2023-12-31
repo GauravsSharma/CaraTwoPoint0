@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { IoMdHeart } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { RiStarSFill } from "react-icons/ri";
+import { useFirebase } from '../../firebase/FirebaseContext';
 const ProductCard = ({ img, name, price1,price2, id, width = "1/5", isWish = false, setWish }) => {
    // console.log(id);
    const [color, setColor] = useState("slate");
+   const {addToWishlist,addToCart} = useFirebase()
    const navigate = useNavigate();
    const addItemToCart = () => {
       // console.log("we called");
@@ -16,10 +18,7 @@ const ProductCard = ({ img, name, price1,price2, id, width = "1/5", isWish = fal
          OPrice:price2,
          id,
       }
-      const data = localStorage.getItem('wishlist')
-      const prev = data ? JSON.parse(data) : [];
-      const updatedCart = [...prev, currCart];
-      localStorage.setItem('wishlist', JSON.stringify(updatedCart));
+      addToWishlist(currCart)
    }
    const toggleColor = () => {
       // console.log("entered");
@@ -39,12 +38,13 @@ const ProductCard = ({ img, name, price1,price2, id, width = "1/5", isWish = fal
 
       const parsedData = JSON.parse(data);
       // console.log('Parsed data:', parsedData);
-
+     
       const updatedData = parsedData.filter((item) => item.id !== id);
       setWish(updatedData)
       // console.log('Updated data:', id);
 
       localStorage.setItem('wishlist', JSON.stringify(updatedData));
+      addToWishlist()
    };
    // console.log(price1,price2);
    const  discountPercentage = ((price2 - price1) / price2) * 100;

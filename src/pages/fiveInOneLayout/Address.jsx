@@ -5,18 +5,21 @@ const Address = () => {
   const [loading,setLoading] = useState(true);
     const [isAddShow,setIsAddShow] = useState(false);
     const [userAddress,setUserAddress] = useState(null);
+    const getAddress=()=>{
+      const data = localStorage.getItem("userAddress");
+      if(data){
+       const parseData = JSON.parse(data);
+       setUserAddress(parseData);
+      } 
+      else{
+       setUserAddress(null);
+      }
+      setTimeout(() => {
+       setLoading(false);
+     }, 3000);
+    }
     useEffect(()=>{
-       const data = localStorage.getItem("userAddress");
-       if(data){
-        const parseData = JSON.parse(data);
-        setUserAddress(parseData);
-       } 
-       else{
-        setUserAddress(null);
-       }
-       setTimeout(() => {
-        setLoading(false);
-      }, 3000);
+      getAddress();
     },[])
 
   return (
@@ -50,7 +53,16 @@ const Address = () => {
             <p className=''>Add new address</p>
         </div>
        </div>
-      <AdForm isAddShow={isAddShow} setIsAddShow={setIsAddShow}/>
+      <AdForm isAddShow={isAddShow} setIsAddShow={setIsAddShow}
+       address={userAddress?.address} 
+       landmark={userAddress?.landmark} 
+       zipCode={userAddress?.zipCode} 
+       country={userAddress?.country} 
+       state={userAddress?.state} 
+       name={userAddress?.name} 
+       phoneNumber={userAddress?.phoneNumber} 
+       getUserAddress={getAddress}
+      />
         <div className='flex flex-col sm:flex-row gap-5  mt-10 w-full justify-between items-center'>
             <div className='relative w-full sm:w-1/2 text-start'>
               <p className='text-base sm:text-xs text-slate-400 font-semibold'>Your Address</p>

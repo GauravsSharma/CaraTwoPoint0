@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import {Hero} from './hero/Hero'
 import CardSection from '../../components/cardSection/CardSection'
 import Carousel from '../../components/carousel/Carousel';
-import Newsletter from '../../components/newLetter/NewsLetter';
 import Img from '../../components/lazyloader/Img'
 import { firestore, useFirebase } from '../../firebase/FirebaseContext';
 import { addDoc, collection } from 'firebase/firestore';
+import NewsLetter from '../../components/newsLetter/NewsLetter';
 const Home = ({setFoot,setNav}) => {
   const [data1,setData1] = useState(null);
   const [data2,setData2] = useState(null);
@@ -129,7 +129,9 @@ const Home = ({setFoot,setNav}) => {
         <CardSection data={data2} heading={"Season's Best Collections"} subHead={"Discover the latest trends in streetwear"}/>
       </>
     }
+     <NewsLetter/>
    </>
+   
   )
 }
 

@@ -5,6 +5,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useParams } from 'react-router-dom';
 import { useFirebase } from '../../firebase/FirebaseContext';
 import Sidebar from './sidebar/Sidebar';
+import NewsLetter from '../../components/newsLetter/NewsLetter';
 const Shopping = ({ setNav, setFoot }) => {
   const [data, setData] = useState(null);
   const [filter, setFilterData] = useState(null);
@@ -34,7 +35,7 @@ const Shopping = ({ setNav, setFoot }) => {
   }
 
   useEffect(() => {
-    const fetchdata = async () => {
+    const getAllTheDocuments = async () => {
       console.log("i run1");
       setLoading(true);
       const data = await getAllDocuments();
@@ -51,25 +52,27 @@ const Shopping = ({ setNav, setFoot }) => {
     const filterDataWithQuery = (data) => {
       // console.log("data", data);
       if (category) {
-        console.log("i run2");
+        setLoading(true);
+        console.log("filterDataWithQuery");
         const decodedQuery = decodeURIComponent(category);
         const word = decodedQuery.toLowerCase();
-
         const filteredProducts = data?.filter(({ name, dis, category }) =>
           name.toLowerCase().includes(word) || dis?.toLowerCase().includes(word) || category.toLowerCase().includes(word)
         )
+        setLoading(false);
         return filteredProducts;
       }
     }
     const filterData = (data) => {
       // console.log("dataaa",data);
+      setLoading(true);
       let filteredProducts = filterDataWithQuery(data);
       getColors(filteredProducts)
       if (price) {
         const priceArr = price.split("-");
-        console.log(priceArr);
+        // console.log(priceArr);
         filteredProducts = filteredProducts.filter(({ DPrice }) => DPrice >= Number(priceArr[0]) && DPrice <= Number(priceArr[1]));
-        console.log(filteredProducts);
+        // console.log(filteredProducts);
 
       }
       if (color) {
@@ -100,9 +103,10 @@ const Shopping = ({ setNav, setFoot }) => {
         }
       }
       setFilterData(filteredProducts);
+      setLoading(false)
     }
     if (!data) {
-      fetchdata()
+      getAllTheDocuments()
         .then((res) => filterData(res))
         .catch((error) => console.log(error))
     }
@@ -131,8 +135,9 @@ const Shopping = ({ setNav, setFoot }) => {
      toggleSort("top-full")
   }
   return (
+    <>
     <div className='flex w-full h-auto relative'>
-      <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow} />
+      <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow} price={price} isSleeves={isSleeves} color={color} />
       <div className="product w-full sm:w-4/5 sm:p-10 relative  border border-1 min-h">
         <div className="shorting flex justify-between items-center ">
           <h1 className='text-base sm:text-2xl p-3 font-medium'>Search results for "{category}"  {filter?.length} products found</h1>
@@ -250,6 +255,8 @@ const Shopping = ({ setNav, setFoot }) => {
         </div>
       </div>
     </div>
+      <NewsLetter/>
+      </>
   )
 }
 

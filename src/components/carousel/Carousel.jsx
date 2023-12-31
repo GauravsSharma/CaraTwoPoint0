@@ -61,7 +61,7 @@ const Carousel = () => {
     return (
         <>
             <div className='max-w-[1400px] h-[500px] w-full relative top-0 group'>
-                <div style={{ backgroundImage: `url(${images?.[currentIdx].url})`, width: "100%", height: "100%", transition: "1000ms", backgroundRepeat: "no-repeat",backgroundSize:"cover",backgroundPosition:"center"}} className='duration-100 relative top-0'>
+                <div style={{ backgroundImage: `url(${images?.[currentIdx]?.url})`, width: "100%", height: "100%", transition: "1000ms", backgroundRepeat: "no-repeat",backgroundSize:"cover",backgroundPosition:"center"}} className='duration-100 relative top-0'>
                 </div>
                 <div className='hidden group-hover:block absolute top-[45%] -translate-x-0 -translate-y-[-50%] left-5 text-2xl  rounded-full p-2 bg-black/20 text-white cursor-pointer'>
                     <BsChevronCompactLeft onClick={setPrev} size={30} />

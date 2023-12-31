@@ -6,6 +6,8 @@ import Img from '../../components/lazyloader/Img'
 import toast, { Toaster } from 'react-hot-toast'
 import ProductReview from './productReview/ProductReview';
 import { FaRegHeart } from "react-icons/fa";
+import ProductCarousel from './productDetailViewCarousel/ProductCarousel';
+import NewsLetter from '../../components/newsLetter/NewsLetter';
 const ItemDetail = ({ setNav, setFoot }) => {
     const [carts, setCarts] = useState([]);
     const ProductReviewMemoized = React.memo(ProductReview);
@@ -16,22 +18,25 @@ const ItemDetail = ({ setNav, setFoot }) => {
     const [imgArr, setImgArr] = useState([]);
     const firebase = useFirebase();
     const { id } = useParams();
-    const [qty,setQty] = useState(1);
+    const [qty, setQty] = useState(1);
+    const [productCarouselShow,setProductCarouselShow] = useState(false);
     // console.log(id);
     useEffect(() => {
         // localStorage.removeItem("cart");
         const storedCart = localStorage.getItem('cart');
         if (storedCart) {
-            setCarts(JSON.parse(storedCart));   
+            setCarts(JSON.parse(storedCart));
         }
         const fetchData = async () => {
             setLoading(true)
             try {
                 const res = await firebase.getDocument(id);
                 const data = res.data();
+                console.log(data);
                 setObj(data);
                 setImgArr(data?.image || []);
                 setMainSrc(data?.image[0]);
+                // console.log(imgArr);
                 setLoading(false);
                 return data;
             } catch (error) {
@@ -61,19 +66,19 @@ const ItemDetail = ({ setNav, setFoot }) => {
         setMainSrc(img);
     }
     const handleAddToCart = (product) => {
-        const isProductExists = carts.length>0&&carts.some((item)=>item.id===id)
-        if(isProductExists){
-            toast.error("You have already added this product in the cart.")
-            return;
-        }
-            console.log(obj.id);
-            const newCart = [...carts, { ...obj, id ,qty:Number(qty)}];
-            setCarts(newCart);
-            console.log(newCart);
-            toast.success("Item added")
-            // Store the updated cart in local storage
-            localStorage.setItem('cart', JSON.stringify(newCart));
-    };
+        const object = {
+            name:obj.name,
+            DPrice:obj.DPrice,
+            OPrice:obj.OPrice,
+            image:obj.image,
+            id:id,
+            qty:Number(qty),
+            color:obj.color,
+            category:obj.category,
+            }
+            firebase.addToCart(object)
+            toast.success("Item added to cart")
+    }
     return (
         <>
             {
@@ -115,7 +120,7 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                         })
                                     }
                                 </div>
-                                <img src={mainSrc} className='w-full sm:w-[80%] h-full cursor-pointer' />
+                                <img src={mainSrc} className='w-full sm:w-[80%] h-full cursor-pointer' onClick={()=>setProductCarouselShow(true)}/>
                             </div>
                             <div className=" w-full sm:w-[65%] mt-7 sm:px-12 pt-30">
                                 <h6 className="text-xl font-semibold my-2">Home / {obj?.category}</h6>
@@ -132,14 +137,26 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                     <option>Small</option>
                                     <option>Large</option>
                                 </select>
-                                <input type="number" value={qty} className="focus:outline-none w-14 border border-1 mr-3 p-2" onChange={(e)=>setQty(e.target.value)}/>
-                               <div className='flex sm:my-2  left-0 bg-white sm:shadow-sm shadow-2xl p-1 gap-1 w-full z-10 fixed sm:relative bottom-0'>
-                               <button className=' w-1/2 p-3 gap-2 text-base sm:relative sm:w-1/4 sm:p-2 bg-white text-black border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white flex justify-center items-center rounded-md font-semibold ' onClick={()=>{}}>
-                                <FaRegHeart/>
-                               WISHLIST
-                               </button>
-                               <button className='w-1/2 left-0 p-3 text-base sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600 rounded-md  font-semibold  duration-500 border-slate-800 hover:text-white' onClick={handleAddToCart}>ADD TO BAG</button>
-                               </div>
+                                <input type="number" value={qty} className="focus:outline-none w-14 border border-1 mr-3 p-2" onChange={(e) => setQty(e.target.value)} />
+                                <div className='flex sm:my-2  left-0 bg-white sm:shadow-sm shadow-2xl p-1 gap-1 w-full z-10 fixed sm:relative bottom-0'>
+                                    <button className=' w-1/2 p-3 gap-2 text-base sm:relative sm:w-1/4 sm:p-2 bg-white text-black border hover:bg-slate-600  duration-500 border-slate-800 hover:text-white flex justify-center items-center rounded-md font-semibold ' onClick={() => {
+                                        firebase.addToWishlist({
+                                            name: obj.name,
+                                            DPrice: obj.DPrice,
+                                            OPrice: obj.OPrice,
+                                            img: obj.image[0],
+                                            color: obj.color,
+                                            category: obj.category,
+                                            id:id
+                                        }
+   
+                                        ); toast.success("Added to wishlist")
+                                    }}>
+                                        <FaRegHeart />
+                                        WISHLIST
+                                    </button>
+                                    <button className='w-1/2 left-0 p-3 text-base sm:relative sm:w-1/4 sm:p-2 bg-slate-800 text-white border hover:bg-slate-600 rounded-md  font-semibold  duration-500 border-slate-800 hover:text-white' onClick={handleAddToCart}>ADD TO BAG</button>
+                                </div>
                                 <h4 className="text-2xl py-4">Product details</h4>
                                 <span className="leading-5 w-full">{
                                     obj?.dis ? <p>{obj?.dis}</p> : <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo accusantium facilis ipsa ut laudantium eligendi omnis dolor dicta. Laborum illum eaque, nihil eius error vero repellat possimus, voluptatibus porro corporis dolor commodi et impedit! Lorem ipsum dolor sit amet consectetur, adipisicing Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, asperiores?</p>
@@ -147,11 +164,13 @@ const ItemDetail = ({ setNav, setFoot }) => {
                             </div>
                         </section>
                         <ProductReviewMemoized productId={id} />
-                        <CardSection data={data} heading={"Similar Products"} subHead={"You may also like"}/>
+                        <CardSection data={data} heading={"Similar Products"} subHead={"You may also like"} />
                         <Toaster />
                     </div>
+                    {productCarouselShow&&<ProductCarousel images={imgArr} setProductCarouselShow={setProductCarouselShow} productCarouselShow={productCarouselShow} />}
                 </>
             }
+            <NewsLetter/>
         </>
     )
 }

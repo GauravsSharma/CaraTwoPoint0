@@ -47,13 +47,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const userAuth = getAuth(app);
 export const firestore = getFirestore(app);
-const storage = getStorage()
+const storage = getStorage();
 export const ContextProvider = (props) => {
 const [user, setUser] = useState(null);
 const currentDate = new Date().toLocaleDateString();
 // console.log(currentDateOnly);
 const currentTime = new Date().toLocaleTimeString();
 // console.log(currentTimeOnly);
+const googleProvider = new GoogleAuthProvider();
+
  
   useEffect(() => {
     onAuthStateChanged(userAuth, (user) => {
@@ -69,6 +71,7 @@ const currentTime = new Date().toLocaleTimeString();
 
   let isLoggedIn = user ? true : false;
   console.log(isLoggedIn);
+  const signInWithGoogle = async() => await signInWithPopup(userAuth, googleProvider)
   const signUp = (email, password) => {
     try {
       return createUserWithEmailAndPassword(userAuth, email, password);
@@ -88,6 +91,15 @@ const currentTime = new Date().toLocaleTimeString();
     try {
       const itemsRef = collection(firestore, 'men');
       const itemQuery = query(itemsRef,where("category","==",c), limit(10));
+      return await getDocs(itemQuery);
+    } catch (error) {
+      console.log("Error while the the items", error);
+    }
+  }
+  const getOrders = async () => {
+    try {
+      const itemsRef = collection(firestore, 'orders');
+      const itemQuery = query(itemsRef,where("userId","==",user?.uid), limit(10));
       return await getDocs(itemQuery);
     } catch (error) {
       console.log("Error while the the items", error);
@@ -151,15 +163,53 @@ const currentTime = new Date().toLocaleTimeString();
 const addOrder = async(order)=>{
   try {
     const ref = collection(firestore,"orders");
-    return await addDoc(ref,order)
+    setLengthOfCart(0);
+    return await addDoc(ref,{...order,userId:user.uid})
   } catch (error) {
      console.log("error in adding order",error);
   }
 }
+const [lengthOfWishlist,setLengthOfWishlist] = useState(()=>{
+  const data = localStorage.getItem("wishlist")
+  return data?JSON.parse(data).length:0
+});
+const [lengthOfCart,setLengthOfCart] = useState(()=>{
+  const data = localStorage.getItem("cart")
+  return data?JSON.parse(data).length:0
+});
+const addToWishlist=(obj)=>{
+  const data = localStorage.getItem('wishlist')
+  const prev = data ? JSON.parse(data) : [];
+ if(obj){
+  const updatedCart = [...prev, obj];
+  setLengthOfWishlist(updatedCart.length);
+  localStorage.setItem('wishlist', JSON.stringify(updatedCart));
+  return updatedCart;
+ }
+ else{
+   setLengthOfWishlist(prev.length);
+ }
+}
+const addToCart=(obj)=>{
+  const data = localStorage.getItem('cart')
+  const prev = data ? JSON.parse(data) : [];
+  if(obj){
+  const updatedCart = [...prev, obj];
+  setLengthOfCart(updatedCart.length);
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
+  return updatedCart;
+  }
+  else{
+    setLengthOfCart(prev.length)
+  }
+}
+const signout = async () => {
+  return await signOut(userAuth);
+}
   return (
     <>
       <Firebase.Provider
-        value={{ signUp, signin, isLoggedIn,getDocuments,getDocument,getAllDocuments,addReviewForProduct,getReviewDocument,addOrder}}
+        value={{ signUp, signin, isLoggedIn,getDocuments,getDocument,getAllDocuments,addReviewForProduct,getReviewDocument,addOrder,signInWithGoogle,user,addToWishlist,lengthOfWishlist,lengthOfCart,addToCart,signout,getOrders}}
       >
         {props.children}
       </Firebase.Provider>

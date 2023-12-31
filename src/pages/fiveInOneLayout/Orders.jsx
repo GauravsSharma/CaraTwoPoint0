@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import ShoppingCart from '../cartPage/ShoppingCart'
 import OrderFlow from './OrderFlow';
+import { useFirebase } from '../../firebase/FirebaseContext';
 const Orders = () => {
   const [loading, setLoading] = useState(true);
-  useEffect(()=>{
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  },[])
+  const { getOrders } = useFirebase()
+  const [orders, setOrders] = useState(null);
+  useEffect(() => {
+    getOrders()
+      .then((res) => setOrders(res?.docs)).then(()=>console.log("orsder",orders))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, [])
   if (loading) {
     return <>
       <div className='p-5 sm:p-10 w-full'>
@@ -46,14 +50,54 @@ const Orders = () => {
             </div>
           </div>
         </div>
-       
+
       </div>
     </>
+  }
+  if (!orders || orders.length === 0) {
+    // No orders, display fallback image
+    return (
+      <>
+        <div className='h-full w-full flex-col flex justify-center items-center'>
+          <img
+            src="https://img.freepik.com/free-vector/taking-orders-by-phone-store-contact-center-customers-support-easy-order-fast-delivery-trade-service-call-center-operator-cartoon-character_335657-2564.jpg?w=740&t=st=1704033823~exp=1704034423~hmac=f7c5bd79abebef12636749bebefc11c58384b1e19cd35d7875fd9bf1bbaeb720"
+            className='h-80 w-80 mt-6'
+            alt=""
+          />
+          <h3 className='-mt-5 text-xl text-slate-500'>No orders found !!</h3>
+        </div>
+      </>
+    );
   }
   return (
     <>
       <div className='w-full sm:w-[85%] py-10 px-5 sm:py-14 sm:px-10'>
-       <OrderFlow/>
+        <h1>Your Orders</h1>
+      
+       <div className="flex">
+        {
+          orders.map((item) => (
+            item?.data()?.carts?.map((cart) => {
+              console.log("entered");
+              return <ShoppingCart key={cart?.id}
+                name={cart?.name}
+                DPrice={cart?.DPrice}
+                OPrice={cart?.OPrice}
+                size={cart?.size}
+                color={cart?.color}
+                image={cart?.image[0]}
+                id={cart?.id}
+                quan={cart?.qty}
+                isOrder={true}
+                date={item?.data().date}
+                paymentId={item?.data().paymentId}
+                />
+            })
+          ))
+        }
+        
+      </div>
+    
       </div>
     </>
   )

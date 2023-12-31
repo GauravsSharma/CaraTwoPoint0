@@ -126,7 +126,15 @@ const GetOrders = ({isCheckoutShow=false, setISCheckoutShow,handleQuantityChange
     <div className='sm:p-10 w-full sm:w-[70%]'>
       {renderDeliveryAddress()}
       {renderOrderSummary()}
-      <AdForm isAddShow={isAddShow} setIsAddShow={setIsAddShow} address={address?.address} landmark={address?.landmark} zipCode={address?.zipCode} country={address?.country} state={address?.state} name={address?.name} phoneNumber={address?.phoneNumber} getUserAddress={getUserAddress} />
+      <AdForm isAddShow={isAddShow} setIsAddShow={setIsAddShow} 
+      address={address?.address} 
+      landmark={address?.landmark} 
+      zipCode={address?.zipCode} c
+      ountry={address?.country} s
+      tate={address?.state} 
+      name={address?.name} 
+      phoneNumber={address?.phoneNumber} 
+      getUserAddress={getUserAddress} />
       <Toaster />
     </div>
   );
