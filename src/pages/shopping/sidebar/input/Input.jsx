@@ -1,37 +1,15 @@
-import React, { useEffect, useState } from 'react'
 
-const Input = ({lable,id,name,onChange,value,color="white",resetValue,selectedValue,setSelectedValue}) => {
- const handleClick = (e) => {
-  console.log("newvalue",newValue);
-  onChange(e.target.value);
-  setSelectedValue(e.target.value) // Move the onChange call outside the state updater
-  console.log("selected is", selected);
-  };
-
-  useEffect(() => { 
-  }, [resetValue]);
-  return (
-    <label 
-    htmlFor={id} 
-    className='text-slate-500  block cursor-pointer pl-7  relative'
-    >
-    <input 
-    type="radio" 
-    name={name} 
-    id={id} 
-    className='text-red-500 hidden'
-    onChange={handleClick}
-    checked={selectedValue===value}
-    value={value}
-    />
-    <div 
-    
-    className={`circle h-5 w-5 mr-2 inline-block absolute top-0 left-0 rounded-full border-2
-    `} style={{backgroundColor:color}}></div>
-    <span 
-    className='inline-block duration-500 text-slate-500'>{lable}</span>
-  </label>
-  )
+function search(){
+  const products = [
+    {
+      name:"blue denim shirt  with mark",
+      dis:"this shirt looks very beautiful with black cargo, thie shirt comes with denim material"
+    },
+    {
+      name:"black cargo  with blue stripped",
+      dis:"this black looks outstanding with blue shirt, thie comes with denim material"
+    },
+  ]
+  const userQuery = "shirts and pants"
 }
-
-export default Input 
+export default search

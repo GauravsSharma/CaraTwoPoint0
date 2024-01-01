@@ -34,7 +34,8 @@ const Header = () => {
       setSearchOption([])
     }
   }
-  let url = firebase.user!=null?firebase.user?.photoURL:"https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671116.jpg?w=740&t=st=1703837364~exp=1703837964~hmac=33dcc8385818924229394fd67ba929edb782c5eb07ec9f261dfa935f2ae88d53";
+  let url = firebase.user?.photoURL!=null?firebase.user?.photoURL:"https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671116.jpg?w=740&t=st=1703837364~exp=1703837964~hmac=33dcc8385818924229394fd67ba929edb782c5eb07ec9f261dfa935f2ae88d53";
+  console.log(url);
   useEffect(() => {
     closeMenu()
     window.scrollTo(0, 0);

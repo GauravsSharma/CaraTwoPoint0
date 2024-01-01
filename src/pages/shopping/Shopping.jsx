@@ -50,15 +50,20 @@ const Shopping = ({ setNav, setFoot }) => {
     }
 
     const filterDataWithQuery = (data) => {
-      // console.log("data", data);
       if (category) {
         setLoading(true);
-        console.log("filterDataWithQuery");
         const decodedQuery = decodeURIComponent(category);
         const word = decodedQuery.toLowerCase();
-        const filteredProducts = data?.filter(({ name, dis, category }) =>
-          name.toLowerCase().includes(word) || dis?.toLowerCase().includes(word) || category.toLowerCase().includes(word)
-        )
+        const queryArr = word.split(" ");
+    
+        const filteredProducts = data?.filter(({ name, dis, category }) => {
+          return (
+            queryArr.some((q) => name && name.toLowerCase().includes(q)) ||
+            queryArr.some((q) => dis && dis.toLowerCase().includes(q)) ||
+            queryArr.some((q) => category && category.toLowerCase().includes(q))
+          );
+        });
+    
         setLoading(false);
         return filteredProducts;
       }
@@ -140,14 +145,12 @@ const Shopping = ({ setNav, setFoot }) => {
       <Sidebar colors={colors} setPrice={setPrice} setColor={setColor} setIsSleeves={setIsSleeves} setIsSort={setIsSort} isFilterShow={isFilterShow} setIsfilterShow={setIsfilterShow} price={price} isSleeves={isSleeves} color={color} />
       <div className="product w-full sm:w-4/5 sm:p-10 relative  border border-1 min-h">
         <div className="shorting flex justify-between items-center ">
-          <h1 className='text-base sm:text-2xl p-3 font-medium'>Search results for "{category}"  {filter?.length} products found</h1>
+          <h1 className='text-base sm:text-2xl p-3 font-medium mt-3 sm:mt-0'>Results for "{category}"  {filter?.length} products found</h1>
           <form>
             <div className='justify-center items-center hidden md:flex'>
               <label htmlFor="sort" className='text-slate-500 mr-2 font-extralight'>Sort by:</label>
               <select name="" id="sort" className='py-1 px-1 sm:py-2 sm:px-3 border border-1 text-slate-400 border-slate-300 rounded-sm' onClick={(e) => setIsSort(e.target.value)}>
                 <option value="latest" className='h-5'>Latest</option>
-                <option value="ratingHighToLow" className='py-2 px-3'>Rating high to low</option>
-                <option value="ratingLowToHigh" className='py-2 px-3'>Rating low to high</option>
                 <option value="priceHighToLow" className='py-2 px-3'>Price high to low</option>
                 <option value="priceLowToHigh" className='py-2 px-3'>Price low to high</option>
               </select>
@@ -231,9 +234,12 @@ const Shopping = ({ setNav, setFoot }) => {
             </> : <>
               <div className="flex relative flex-wrap justify-start items-center h-auto">
 
-                {filter?.map((item) => (
+                {filter.length>0?filter?.map((item) => (
                   <Card key={item.id} img={item?.image[0]} name={item.name} price1={item.DPrice} price2={item.OPrice} id={item.id} />
-                ))}
+                )):<div className='h-[50vh] flex-col w-full flex justify-center items-center'>
+                    <img src="https://img.freepik.com/free-vector/hand-drawn-no-data-illustration_23-2150696455.jpg?w=740&t=st=1704097849~exp=1704098449~hmac=5687c29893929c2e701b30b28d07e38eb69a69b1cb29215aaa85d6c6c683dd0b" className='h-60 w-60 object-cover' alt="" />
+                    <h1 className='-mt-5 text-xl text-slate-500'>Oops!! search not found</h1>
+                </div>}
               </div>
               <div className={`h-full bg-slate-700/25 duration-300 w-full fixed ${isSortShow} left-0 sm:hidden flex justify-center overflow-hidden`} onClick={() => toggleSort("top-full")}>
                 <div className={` w-full h-48 bg-slate-100 shadow-2xl p-5 absolute bottom-0`} onClick={(event) => handleChildClick(event)}>

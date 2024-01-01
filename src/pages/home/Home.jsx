@@ -26,34 +26,11 @@ const Home = ({setFoot,setNav}) => {
     });}
    
   
-    // const addDataToFirestore = async (products) => {
-    //   const menCollection = collection(firestore, "men");
-    //    console.log("enterred");
-    //   const addDocPromises = products.map(async (data) => {
-    //     try {
-    //       console.log(data);
-    //       await addDoc(menCollection, data);
-    //       console.log("Document successfully written to Firestore!");
-    //     } catch (error) {
-    //       console.error("Error writing document to Firestore: ", error);
-    //     }
-    //   });
-  
-    //   try {
-    //     await Promise.all(addDocPromises);
-    //     console.log("All documents successfully written to Firestore!");
-    //   } catch (error) {
-    //     console.error("Error writing documents to Firestore: ", error);
-    //   }
-    // };
   useEffect(()=>{
     fetchdata("men-shirts",setData1);
     fetchdata("men-pants",setData2);
-
     setNav(true)
     setFoot(true);
-   
-    // addDataToFirestore(products)
   }
   ,[])
   return (

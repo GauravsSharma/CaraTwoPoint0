@@ -14,7 +14,7 @@ const CartPage = ({setNav,setFoot}) => {
     const data = localStorage.getItem('cart');
     return data ? JSON.parse(data) : [];
   });
-const {addOrder} = useFirebase()
+const {addOrder,addToCart} = useFirebase()
   const calculateSubTotal = (price)=>{
     let sum = 0;
     if(carts.length>0){
@@ -100,6 +100,10 @@ const {addOrder} = useFirebase()
         }
         try {
           const result = addOrder(orderInfo);
+          setCarts([]);
+localStorage.removeItem("cart")
+addToCart()
+toast.success("Thanks for ordering.")
         } catch (error) {
           toast.error("Something went wrong!! Please try again");
           console.log(error);
@@ -113,9 +117,7 @@ const {addOrder} = useFirebase()
 
 var pay = new window.Razorpay(options);
 pay.open();
-setCarts([]);
-localStorage.removeItem("cart")
-toast.success("Thanks for ordering.")
+
 // console.log(pay)
   }
   if (loading) {
