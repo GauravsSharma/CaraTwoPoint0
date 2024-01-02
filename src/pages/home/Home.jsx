@@ -69,35 +69,35 @@ const Home = ({ setFoot, setNav }) => {
           <div className='p-5 sm:py-10 sm:px-20'>
             <h1 className=' text-xl sm:text-2xl  text-center my-1'>Explore Products</h1>
             <p className='sm:text-base text-sm text-slate-400 text-center mb-7'>Select category</p>
-            <div className="flex justify-between mt-10 flex-wrap">
-              <Link to="/shopping/shirts">
-                <div className="rounded-xl h-52 w-1/2 sm:my-0 my-2 sm:w-44 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+            <div className="flex justify-between mt-10 flex-wrap w-full">
+              <Link to="/shopping/shirts" className='w-1/2 sm:w-44 h-52'>
+                <div className="rounded-xl h-full w-full sm:my-0 my-2 sm:w-44 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                   <img src="https://cdn-media.powerlook.in/catalog/category/Shirts.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                   <h1 className='font-bold text-lg text-center h-[20%] p-2'>SHIRTS</h1>
                 </div></Link>
-              <Link to="/shopping/pants"> <div className="rounded-xl h-52 w-1/2 sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+              <Link to="/shopping/pants" className='w-1/2 sm:w-44 h-52'> <div className="rounded-xl h-full w-full sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                 <img src="https://cdn-media.powerlook.in/catalog/category/Bottoms.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                 <h1 className='font-bold text-lg text-center h-[20%] p-2'>BOTTOMS</h1>
               </div></Link>
-              <Link to="/shopping/jackets">
-                <div className="rounded-xl h-52 w-1/2 sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+              <Link to="/shopping/jackets" className='w-1/2 sm:w-44 h-52'>
+                <div className="rounded-xl h-full w-full sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                   <img src="https://cdn-media.powerlook.in/catalog/category/Jackets.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                   <h1 className='font-bold text-lg text-center h-[20%] p-2'>JACKETS</h1>
                 </div></Link>
-              <Link to="/shopping/coorders">
-                <div className="rounded-xl h-52 w-1/2 sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+              <Link to="/shopping/coorders" className='w-1/2 sm:w-44 h-52'>
+                <div className="rounded-xl h-full w-full sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                   <img src="https://cdn-media.powerlook.in/catalog/category/Co-Ords.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                   <h1 className='font-bold text-lg text-center h-[20%] p-2'>CO-ORDS</h1>
                 </div>
               </Link>
-              <Link to="/shopping/t-shirts">
-                <div className="rounded-xl h-52 w-1/2 sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+              <Link to="/shopping/t-shirts" className='w-1/2 sm:w-44 h-52'>
+                <div className="rounded-xl h-full w-full sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                   <img src="https://cdn-media.powerlook.in/catalog/category/T-shirts_1.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                   <h1 className='font-bold text-lg text-center h-[20%] p-2'>T-SHIRTS</h1>
                 </div>
               </Link>
-              <Link to="/shopping/shirts">
-                <div className="rounded-xl h-52 w-1/2 sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
+              <Link to="/shopping/shirts" className='w-1/2 sm:w-44 h-52'>
+                <div className="rounded-xl h-full w-full sm:w-44 sm:my-0 my-2 hover:scale-110 hover:shadow-2xl duration-700 shadow-lg">
                   <img src="https://cdn-media.powerlook.in/catalog/category/On-Sale.jpg" style={{ height: '80%', width: '100%', objectFit: "cover" }} />
                   <h1 className='font-bold text-lg text-center h-[20%] p-2'>70% OFF</h1>
                 </div>

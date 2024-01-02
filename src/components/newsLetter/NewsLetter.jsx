@@ -4,7 +4,7 @@ const NewsLetter = () => {
   const [email,setEmail] = useState("")
 
   return (
-    <section className=" bg-gradient-to-r from-purple-700 via-red-500 to-yellow-300 flex justify-between sm:p-10  items-center flex-wrap bg-cover bg-no-repeat bg-center bg-banner-b14 p-5">
+    <section className=" my-10 bg-gradient-to-r from-purple-700 via-red-500 to-yellow-300 flex justify-between sm:p-10  items-center flex-wrap bg-cover bg-no-repeat bg-center bg-banner-b14 p-5">
     <div className="newstext text-white">
       <h4 className="sm:text-2xl text-xl font-bold text-white">Signup For Newsletter</h4>
       <p className="sm:text-lg text-base sm:font-semibold  text-white">
