@@ -18,7 +18,7 @@ idx,
 setISCheckoutShow,
 isOrder=false,
 date,
-paymentId
+paymentId,
 }
 ) => {
   const [quantity,setQuantity] = useState(quan);
@@ -46,19 +46,21 @@ paymentId
       OPrice,
       id,
     }
-      addToWishlist(wishObj);
+      const check = addToWishlist(wishObj);
+      if(check){
+        const getcarts = localStorage.getItem("cart")
+        const updatedCart = JSON.parse(getcarts).filter((item)=>{
+         return item.id!==id
+        })
+        localStorage.setItem("cart",JSON.stringify(updatedCart))
+        setCart(updatedCart)
+        addToCart();
+      }
       // get the item form cart and remove it 
-      const getcarts = localStorage.getItem("cart")
-      const updatedCart = JSON.parse(getcarts).filter((item)=>{
-       return item.id!==id
-      })
-      localStorage.setItem("cart",JSON.stringify(updatedCart))
-      setCart(updatedCart)
-      addToCart();
-      toast.success("Item moved to wishlist");
+    
   }
   const handleRemoveFromCart = () => {
-    console.log("id is",id);
+    // console.log("id is",id);
     const items = localStorage.getItem("cart");
     const parsedItems = JSON.parse(items);
   
@@ -69,9 +71,10 @@ paymentId
   
     // Update local storage with the new array of items
     localStorage.setItem("cart", JSON.stringify(updatedItems));
+    setCart(updatedItems);
+    toast.success("Item removed");
     addToCart()
     // Update state if you are using state to manage the cart in your component
-    setCart(updatedItems);
   };
  
   return (
@@ -81,7 +84,7 @@ paymentId
         <div className="upper w-full flex p-1 sm:p-3 justify-between items-start flex-col sm:flex-row h-[80%] ">
           <div className="left w-full sm:w-[80%] flex flex-col items-start pl-1">
             <h2 className='text-sm'>{name}</h2>
-            <h3 className='text-sm'>Color <div className={`inline-block rounded-sm bg-${color}-300 h-4 w-4 mx-1 mt-[3px]`}></div> Size M · Sleeves Full Sleeves · SKU 04-955630-M</h3>
+            <h3 className='text-sm'>Color <div style={{backgroundColor:`${color}`}} className={`inline-block boder rounded-sm h-3 w-3 mx-1 mt-[4px]`}></div> Size · {size} · SKU 04-955630-{size}</h3>
            {!isOrder?<div className='flex justify-start gap-1 items-center w-full mt-2'>
               <p className='text-[15px] font-semibold'>QTY</p>
               <span className='py-0 px-2 text-lg border mr-1  font-semibold cursor-pointer' onClick={handlePlus}>+</span>
@@ -101,7 +104,7 @@ paymentId
         </div>
        { !isOrder&&<div className="lower h-[20%] w-full ">
           <div className='flex h-full w-full justify-start items-center p-1 sm:p-3 sm:py-4'>
-            <div className="remove text-slate-400 text-sm pr-7 font-semibold cursor-pointer border-r-2" onClick={()=>handleRemoveFromCart(id)}>REMOVE</div>
+          {  !isCheckoutShow&&<div className="remove text-slate-400 text-sm pr-7 font-semibold cursor-pointer border-r-2" onClick={()=>handleRemoveFromCart()}>REMOVE</div>}
            {!isCheckoutShow&& <div className="move text-red-500 text-sm pl-7  font-semibold cursor-pointer" onClick={handleMoveToWishList}>MOVE TO WISHLIST</div>}
           </div>
         </div>}

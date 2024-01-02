@@ -19,6 +19,7 @@ const ItemDetail = ({ setNav, setFoot }) => {
     const firebase = useFirebase();
     const { id } = useParams();
     const [qty, setQty] = useState(1);
+    const [size,setSize] = useState("small")
     const [productCarouselShow,setProductCarouselShow] = useState(false);
     // console.log(id);
     useEffect(() => {
@@ -75,9 +76,9 @@ const ItemDetail = ({ setNav, setFoot }) => {
             qty:Number(qty),
             color:obj.color,
             category:obj.category,
+            size
             }
             firebase.addToCart(object)
-            toast.success("Item added to cart")
     }
     return (
         <>
@@ -130,12 +131,12 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                     <s className='mr-1 text-slate-400 mx-2 text-xl'>₹{obj?.OPrice}</s>
                                     <p className="font-bold my-1 text-green-600 text-xl">({Math.round(discountPercentage)}% off)</p>
                                 </div>
-                                <select className="block py-2 px-4 mb-4 bg-white border border-gray-300 focus:outline-none">
+                                <select className="block py-2 px-4 mb-4 bg-white border border-gray-300 focus:outline-none" onClick={(e)=>setSize(e.target.value)}>
                                     <option>Select Size</option>
-                                    <option>XL</option>
-                                    <option>XXL</option>
-                                    <option>Small</option>
-                                    <option>Large</option>
+                                    <option value="xl">XL</option>
+                                    <option value="xxl">XXL</option>
+                                    <option value="small">Small</option>
+                                    <option value="large">Large</option>
                                 </select>
                                 <input type="number" value={qty} className="focus:outline-none w-14 border border-1 mr-3 p-2" onChange={(e) => setQty(e.target.value)} />
                                 <div className='flex sm:my-2  left-0 bg-white sm:shadow-sm shadow-2xl p-1 gap-1 w-full z-10 fixed sm:relative bottom-0'>
@@ -147,10 +148,11 @@ const ItemDetail = ({ setNav, setFoot }) => {
                                             img: obj.image[0],
                                             color: obj.color,
                                             category: obj.category,
-                                            id:id
+                                            id:id,
+                                            size
                                         }
    
-                                        ); toast.success("Added to wishlist")
+                                        )
                                     }}>
                                         <FaRegHeart />
                                         WISHLIST

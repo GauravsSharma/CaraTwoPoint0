@@ -11,6 +11,11 @@ const GetReviewsModel = ({ isOpen, toggleModel,productId,fetchDocument}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagesForDb, setImagesForDb] = useState([]);
   const firebase = useFirebase()
+  const [userInfo,setUserInfo] = useState(()=>{
+    const data = localStorage.getItem('user');
+    return data?JSON.parse(data):"user";
+  })
+  console.log(userInfo);
   const initialValues = {
     reviewTitle: "",
     reviewDiscription:""
@@ -49,8 +54,8 @@ const GetReviewsModel = ({ isOpen, toggleModel,productId,fetchDocument}) => {
     onSubmit: async (values, action) => {
       try {
         const addReviewPromise = imagesForDb.length > 0
-          ? firebase.addReviewForProduct(productId, rating, values.reviewDiscription, values.reviewTitle, imagesForDb)
-          : firebase.addReviewForProduct(productId, rating, values.reviewDiscription, values.reviewTitle);
+          ? firebase.addReviewForProduct(userInfo.fullName,productId, rating, values.reviewDiscription, values.reviewTitle, imagesForDb)
+          : firebase.addReviewForProduct(userInfo.fullName,productId, rating, values.reviewDiscription, values.reviewTitle);
     
         await toast.promise(addReviewPromise, {
           loading: 'Loading',

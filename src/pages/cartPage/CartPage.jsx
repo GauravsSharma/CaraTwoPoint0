@@ -9,7 +9,6 @@ import toast ,{Toaster} from 'react-hot-toast'
 const CartPage = ({setNav,setFoot}) => {
   const [loading,setLoading] = useState(true)
   const [isCheckoutShow,setISCheckoutShow] = useState(false);
-  const {user} = useFirebase()
   const [carts, setCarts] = useState(() => {
     const data = localStorage.getItem('cart');
     return data ? JSON.parse(data) : [];
@@ -211,7 +210,7 @@ pay.open();
             </div>
             {
               carts?.map((item,idx)=>{
-                // console.log(item);
+                // console.log(item?.size);
                 return <ShoppingCart
                  key={item.id}
                 category={item?.category} 
@@ -224,6 +223,7 @@ pay.open();
                 setCart={setCarts}
                 quan = {item?.qty}
                 idx={idx}
+                size={item?.size}
                 handleQuantityChange={handleQuantityChange}
                 />
               })

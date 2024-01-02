@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import toast, { Toaster } from 'react-hot-toast';
 import * as Yup from 'yup'
 import { useFirebase } from '../../firebase/FirebaseContext'
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 const signUpScehma = Yup.object({
     name:Yup.string().min(2).max(30).required("Please enter your name"),
     email:Yup.string().email().required("*Please enter your email"),
@@ -107,7 +107,7 @@ const Register = ({setFoot,setNav}) => {
                 {/* Footer */}
                 <div className="text-center">
                     <span className="text-xs text-gray-400 font-semibold">Don't have account?</span>
-                    <a href="#" className="text-xs font-semibold text-slate-700">Sign up</a>
+                    <Link to="/login" className="text-xs font-semibold text-slate-700">Login</Link>
                 </div>
             </div>
         </div>

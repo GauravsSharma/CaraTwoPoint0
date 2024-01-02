@@ -91,6 +91,7 @@ const Orders = () => {
                 isOrder={true}
                 date={item?.data().date}
                 paymentId={item?.data().paymentId}
+              
                 />
             })
           ))

@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getBytes, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
-
+import toast,{Toaster} from 'react-hot-toast'
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -129,7 +129,7 @@ const googleProvider = new GoogleAuthProvider();
     console.log("Error in getting a single document",error);
   }
  }
- const addReviewForProduct = async (productId, rating, reviewDescription, reviewTitle,imagesForDb) => {
+ const addReviewForProduct = async (userName,productId, rating, reviewDescription, reviewTitle,imagesForDb) => {
   try {
     // Upload images to storage
     const imageUrls = imagesForDb
@@ -151,7 +151,8 @@ const googleProvider = new GoogleAuthProvider();
       rating: rating,
       images: imageUrls,
       currentDate,
-      currentTime
+      currentTime,
+      userName
     };
 
     await addDoc(collectionRef, reviewData);
@@ -164,7 +165,7 @@ const addOrder = async(order)=>{
   try {
     const ref = collection(firestore,"orders");
     setLengthOfCart(0);
-    return await addDoc(ref,{...order,userId:user.uid})
+    return await addDoc(ref,{...order,userId:user?.uid})
   } catch (error) {
      console.log("error in adding order",error);
   }
@@ -180,11 +181,19 @@ const [lengthOfCart,setLengthOfCart] = useState(()=>{
 const addToWishlist=(obj)=>{
   const data = localStorage.getItem('wishlist')
   const prev = data ? JSON.parse(data) : [];
+  const checkIfAlreadyExist = prev.some(item => item.id === obj.id)
+  
+  console.log(checkIfAlreadyExist);
+  if(checkIfAlreadyExist){
+    toast.error("Product already exist in wishlist")
+    return false;
+  }
  if(obj){
   const updatedCart = [...prev, obj];
   setLengthOfWishlist(updatedCart.length);
   localStorage.setItem('wishlist', JSON.stringify(updatedCart));
-  return updatedCart;
+  toast.success("Item added to you wishlist")
+  return true;
  }
  else{
    setLengthOfWishlist(prev.length);
@@ -193,10 +202,19 @@ const addToWishlist=(obj)=>{
 const addToCart=(obj)=>{
   const data = localStorage.getItem('cart')
   const prev = data ? JSON.parse(data) : [];
+ 
   if(obj){
+    const checkIfAlreadyExist = prev.some(item => item.id === obj.id)             
+    console.log(checkIfAlreadyExist);
+    if(checkIfAlreadyExist){
+      console.log("i entered");
+      toast.error("Product already exist in your cart")
+      return;
+    }  
   const updatedCart = [...prev, obj];
   setLengthOfCart(updatedCart.length);
   localStorage.setItem('cart', JSON.stringify(updatedCart));
+  toast.success("Item added to you cart")
   return updatedCart;
   }
   else{
@@ -209,9 +227,10 @@ const signout = async () => {
   return (
     <>
       <Firebase.Provider
-        value={{ signUp, signin, isLoggedIn,getDocuments,getDocument,getAllDocuments,addReviewForProduct,getReviewDocument,addOrder,signInWithGoogle,user,addToWishlist,lengthOfWishlist,lengthOfCart,addToCart,signout,getOrders}}
+        value={{ signUp, signin, user,isLoggedIn,getDocuments,getDocument,getAllDocuments,addReviewForProduct,getReviewDocument,addOrder,signInWithGoogle,addToWishlist,lengthOfWishlist,lengthOfCart,addToCart,signout,getOrders}}
       >
         {props.children}
+        <Toaster/>
       </Firebase.Provider>
     </>
   );
