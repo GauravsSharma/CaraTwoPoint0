@@ -20,9 +20,9 @@ const ProductCarousel = ({images,setProductCarouselShow,productCaraoselShow}) =>
   };
 
   return (
-    <div className='h-screen w-full fixed top-0 left-0 bg-black/75 z-50 flex justify-center items-center'>
-      <div className="sm:w-[50%] w-full sm:h-full h-full sm:p-0 py-10 bg-zinc-800 flex justify-start items-start relative">
-      <div className='w-[20%] sm:block hidden h-full'>
+    <div className='h-full sm:h-screen w-full fixed top-0 left-0 bg-black/75 z-50 flex justify-center items-center'>
+      <div className="sm:w-[50%] w-full sm:h-full h-full sm:p-0 py-10 bg-zinc-800 flex justify-start items-start sm:relative">
+      <div className='w-[20%] sm:block hidden h-full relative'>
         <div className='flex flex-col gap-2 h-1/2  justify-center items-center'>
         {
             images?.map((url,index)=>(
@@ -50,11 +50,12 @@ const ProductCarousel = ({images,setProductCarouselShow,productCaraoselShow}) =>
              
              </div>
           </div>
+          <RxCross2 className='absolute top-2 right-2 text-2xl text-white cursor-pointer' onClick={()=>setProductCarouselShow(false)}/>
         </div>
        
         <div onClick={prevImage} className="absolute sm:block left-0  sm:-left-16 p-5 bg-white rounded-full text-slate-600 top-1/2 transform -translate-y-1/2 cursor-pointer"><FaArrowLeft/></div>
         <div onClick={nextImage} className="absolute sm:block right-0 sm:-right-16 p-5 bg-white rounded-full text-slate-600 top-1/2 transform -translate-y-1/2 cursor-pointer"><FaArrowRight/></div>
-      <RxCross2 className='absolute top-2 right-2 text-2xl text-white cursor-pointer' onClick={()=>setProductCarouselShow(false)}/>
+     
       </div>
     </div>
   );
