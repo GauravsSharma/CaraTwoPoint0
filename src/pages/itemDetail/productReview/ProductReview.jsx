@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { IoStar } from "react-icons/io5";
 import CustomerReviewCard from './CustomerReviewCard';
-import { IoMdArrowDropdown } from "react-icons/io";
-import { PiCaretUpDuotone } from "react-icons/pi";
+import { CgChevronDown } from "react-icons/cg";
 import GetReviewsModel from './GetReviewsModel';
 import { useFirebase } from '../../../firebase/FirebaseContext';
 import { useEffect } from 'react';
+import { CgChevronUp } from "react-icons/cg";
 import toast, { Toaster } from 'react-hot-toast';
 const ProductReview = ({ productId }) => {
   const [showAllReview, setShowAllReview] = useState(false);
@@ -13,14 +13,14 @@ const ProductReview = ({ productId }) => {
   const { getReviewDocument, user } = useFirebase()
   const [productReviewDoc, seProductReviewDoc] = useState([]);
   const [displayedReviews, setDisplayedReviews] = useState(2);
-  const [overallRating,setOverallRating] = useState(0)
-  const [ratingArr,setRatingArr] = useState();
-  const [length,setLength] = useState(0);
+  const [overallRating, setOverallRating] = useState(0)
+  const [ratingArr, setRatingArr] = useState();
+  const [length, setLength] = useState(0);
   const [userInfo, setUserInfo] = useState(() => {
     const data = localStorage.getItem('user');
     return data ? JSON.parse(data) : null;
   })
- 
+
   const toggleModel = () => {
     if (user) {
       if (userInfo) {
@@ -37,7 +37,7 @@ const ProductReview = ({ productId }) => {
   const fetchDocument = async () => {
     try {
       const res = await getReviewDocument(productId);
-       console.log(res.docs);
+      console.log(res.docs);
       seProductReviewDoc(res.docs);
       const overallrating = calculateOverallRating(res.docs)
       setOverallRating(overallrating)
@@ -49,20 +49,18 @@ const ProductReview = ({ productId }) => {
       console.error("Error fetching data:", error);
     }
   }
-  useEffect(()=>{
-   
-  },[productReviewDoc])
+
   const calculateOverallRating = (docs) => {
 
-    
-    const totalRatings = docs.reduce((sum,review) => sum+Number(review.data().rating),0);
-    console.log("entered",totalRatings);
+
+    const totalRatings = docs.reduce((sum, review) => sum + Number(review.data().rating), 0);
+    console.log("entered", totalRatings);
     const averageRating = totalRatings / docs.length;
     return averageRating.toFixed(1); // Limit to one decimal place
   };
   const countUsersArray = (docs) => {
     const ratingCounts = Array(5).fill(0); // Initialize an array with zeros for each rating
-  
+
     // Count users for each rating
     docs.forEach((review) => {
       const rating = review.data().rating;
@@ -71,9 +69,13 @@ const ProductReview = ({ productId }) => {
     setRatingArr(ratingCounts);
     return ratingCounts;
   };
-  
-  
-  const visibleReviews = productReviewDoc.splice(0, displayedReviews);
+
+  const copyOfReviews = productReviewDoc.slice();
+  console.log(productReviewDoc);
+  console.log("cpy", copyOfReviews);
+  const visibleReviews = copyOfReviews.splice(0, displayedReviews);
+  console.log("splic", visibleReviews);
+
   const handleButtonClick = () => {
     setShowAllReview(!showAllReview);
     // If showAllReview is false, display all reviews; otherwise, display only the first 2
@@ -100,13 +102,13 @@ const ProductReview = ({ productId }) => {
           <div className="box1 w-full sm:w-[30%] border-t-2 sm:border-t-0 ">
             <h1 className='sm:text-3xl text-xl font-semibold mb-5 sm:mb-1 mt-5 sm:mt-0'>Rate & Review</h1>
             <div className='flex justify-start items-center mt-3'><IoStar className='text-xl text-green-600' /> <span className='font-semibold text-xl mx-1 sm:mx-2'>{overallRating}</span><span className='text-slate-400 sm:ml-4 ml-1 text-[14px]'>{length} varified customers review this.</span></div>
-            {[5,4,3,2,1].map((rating,index) => (
+            {[5, 4, 3, 2, 1].map((rating, index) => (
               <div className={`flex justify-start items-center text-slate-400 text-[15px] sm:text-xl my-1 sm:my-5`} key={rating}>
                 {rating} <IoStar className='text-slate-400 text-base mx-3 ' />
                 <div className='h-[10px] w-[50%] sm:w-[60%] mr-2 bg-slate-200'>
-                  <div style={{width: `${(ratingArr[rating-1] / length) * 200}%`}} className={`h-full bg-green-500`}></div>
+                  <div style={{ width: `${(ratingArr[rating - 1] / length) * 200}%` }} className={`h-full bg-green-500`}></div>
                 </div>
-                <div className='text-slate-900 sm:text-base text-[15px]'>{ratingArr[rating-1]
+                <div className='text-slate-900 sm:text-base text-[15px]'>{ratingArr[rating - 1]
                 }</div>
               </div>
             ))}
@@ -121,7 +123,7 @@ const ProductReview = ({ productId }) => {
               }
               {
                 length > 2 && <button onClick={handleButtonClick} className='duration-500 text-red-600 text-start'>{
-                  showAllReview ? <>Hide all 14 review <PiCaretUpDuotone className='inline-block text-xl' /></> : <>Show all 14 review <IoMdArrowDropdown className='inline-block text-xl' /></>
+                  showAllReview ? <>Hide all 14 review <CgChevronUp className='inline-block text-xl' /></> : <>Show all review <CgChevronDown className='inline-block text-xl' /></>
                 }</button>
               }
             </div>
