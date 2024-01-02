@@ -106,7 +106,7 @@ const ProductReview = ({ productId }) => {
               <div className={`flex justify-start items-center text-slate-400 text-[15px] sm:text-xl my-1 sm:my-5`} key={rating}>
                 {rating} <IoStar className='text-slate-400 text-base mx-3 ' />
                 <div className='h-[10px] w-[50%] sm:w-[60%] mr-2 bg-slate-200'>
-                  <div style={{ width: `${(ratingArr[rating - 1] / length) * 200}%` }} className={`h-full bg-green-500`}></div>
+                  <div style={{ width: `${(ratingArr[rating - 1] / length) * 100}%` }} className={`h-full bg-green-500`}></div>
                 </div>
                 <div className='text-slate-900 sm:text-base text-[15px]'>{ratingArr[rating - 1]
                 }</div>
