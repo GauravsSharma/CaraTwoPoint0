@@ -74,7 +74,7 @@ const Orders = () => {
       <div className='w-full sm:w-[85%] py-10 px-5 sm:py-14 sm:px-10'>
         <h1>Your Orders</h1>
       
-       <div className="flex">
+       <div className="flex flex-col">
         {
           orders.map((item) => (
             item?.data()?.carts?.map((cart) => {
