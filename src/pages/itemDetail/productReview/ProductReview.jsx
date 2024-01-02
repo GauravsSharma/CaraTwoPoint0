@@ -123,7 +123,7 @@ const ProductReview = ({ productId }) => {
               }
               {
                 length > 2 && <button onClick={handleButtonClick} className='duration-500 text-red-600 text-start'>{
-                  showAllReview ? <>Hide all 14 review <CgChevronUp className='inline-block text-xl' /></> : <>Show all review <CgChevronDown className='inline-block text-xl' /></>
+                  showAllReview ? <>Hide reviews <CgChevronUp className='inline-block text-xl' /></> : <>Show all review <CgChevronDown className='inline-block text-xl' /></>
                 }</button>
               }
             </div>
