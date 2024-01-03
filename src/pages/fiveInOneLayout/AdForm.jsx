@@ -3,7 +3,16 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Transition, Dialog } from '@headlessui/react';
 import { RxCross2 } from "react-icons/rx";
 import toast ,{ Toaster } from 'react-hot-toast';
-
+import * as Yup from 'yup'
+const addressScehma = Yup.object({
+  name: Yup.string().required("*Please enter your name"),
+  phoneNumber: Yup.string().max(10, "*Phone number must be at most 10 characters").required("*Please enter your phone number"),
+  address1: Yup.string().min(6, "*Address must be at least 6 characters").required("*Please enter your address"),
+  zipCode: Yup.string().min(5, "*Zip code must be at least 5 characters").required("*Please enter your zip code"),
+  country: Yup.string().min(3, "*Country must be at least 3 characters").required("*Please enter your country"),
+  state: Yup.string().min(5, "*State must be at least 5 characters").required("*Please enter your state"),
+  landmark: Yup.string().min(3, "*Landmark must be at least 3 characters").required("*Please enter your landmark"),
+})
 const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode = "", country = "", state = "",getUserAddress,name="",phoneNumber=""})=>{
   const [formValues, setFormValues] = useState({
     name:name,
@@ -44,6 +53,7 @@ const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode 
   }, [address, landmark, zipCode, country, state]);
 
   const handleSubmit = (formValues, action) => {
+
     const addressData = {
       phoneNumber:formValues.phoneNumber,
       name:formValues.name,
@@ -97,7 +107,7 @@ const AdForm = ({ isAddShow, setIsAddShow, address = "", landmark = "", zipCode 
                       <RxCross2 className='absolute top-3 right-3 cursor-pointer' onClick={()=>{setIsAddShow(false)}}/>
                       <div className="w-full  rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                          <Formik initialValues={initialValues} validationSchema={addressScehma} onSubmit={handleSubmit}>
                             <Form className="space-y-4 md:space-y-6">
                               <h1 className="text-2xl font-semibold">
                                 Add Your Address
