@@ -84,7 +84,7 @@ const Shopping = ({ setNav, setFoot }) => {
         filteredProducts = filteredProducts.filter((item) => item.color === color);
       }
       if (isSleeves) {
-        filteredProducts = filteredProducts.filter(({ dis }) => dis.toLowerCase().includes(isSleeves.toLowerCase()))
+        filteredProducts = filteredProducts.filter(({ dis }) => dis&&dis.toLowerCase().includes(isSleeves.toLowerCase()))
       }
       if (isSort) {
         switch (isSort) {
